@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://jaroxciv.github.io/sitemap.xml
