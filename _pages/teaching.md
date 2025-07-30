@@ -2,11 +2,24 @@
 layout: page
 permalink: /teaching/
 title: teaching
-description: Materials for courses you taught. Replace this text with your description.
+description: Selected teaching experience.
 nav: true
 nav_order: 6
 ---
 
-For now, this page is assumed to be a static description of your courses. You can convert it to a collection similar to `_projects/` so that you can have a dedicated page for each course.
+## University Lecturer  
+**Higher School of Economics and Business**  
+_April 2022 – June 2023_
 
-Organize your courses by years, topics, or universities, however you like!
+- **Introduction to Python and Data Processing** (Undergraduate)  
+  [View slides](https://docs.google.com/presentation/d/1m-nxPzu7KqIN4ZRtk-rSHEna4kpWBTNVGdr_i0TP6dI/edit?usp=sharing)
+- **Intermediate Python** (Undergraduate)  
+  [View slides](https://docs.google.com/presentation/d/1YPvo3rL2FI3XG2txZ-HbR-n_QXyPrpvq8zSFSI3iays/edit?usp=sharing)
+
+## Teaching Assistant  
+**Higher School of Economics and Business**  
+_August 2018 – December 2020_
+
+- **Introduction to Public Policy: Society and Economics** (Undergraduate)
+- **Introduction to Python and Data Processing** (Advanced, Undergraduate)
+- **Introduction to Research: Qualitative Research Methods** (Undergraduate)

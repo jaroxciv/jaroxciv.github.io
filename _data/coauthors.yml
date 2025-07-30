@@ -1,34 +1,59 @@
-"adams":
-  - firstname: ["Edwin", "E.", "E. P.", "Edwin Plimpton"]
-    url: https://en.wikipedia.org/wiki/Edwin_Plimpton_Adams
+alfaro:
+  - firstname: ["Javier", "J."]
+    url: https://www.linkedin.com/in/javi-alfaro
 
-"podolsky":
-  - firstname: ["Boris", "B.", "B. Y.", "Boris Yakovlevich"]
-    url: https://en.wikipedia.org/wiki/Boris_Podolsky
+scepanovic:
+  - firstname: ["Sanja", "S."]
+    url: https://www.uehiro.ox.ac.uk/people/dr-sanja-scepanovic
 
-"rosen":
-  - firstname: ["Nathan", "N."]
-    url: https://en.wikipedia.org/wiki/Nathan_Rosen
+law:
+  - firstname: ["Stephen", "S."]
+    url: https://profiles.ucl.ac.uk/21695-stephen-law
 
-"bach":
-  - firstname: ["Johann Sebastian", "J. S."]
-    url: https://en.wikipedia.org/wiki/Johann_Sebastian_Bach
+quercia:
+  - firstname: ["Daniele", "D."]
+    url: https://www.nokia.com/people/daniele-quercia/
 
-  - firstname: ["Carl Philipp Emanuel", "C. P. E."]
-    url: https://en.wikipedia.org/wiki/Carl_Philipp_Emanuel_Bach
+akintola:
+  - firstname: ["Moronfoluwa"]
+    url: https://www.herts.ac.uk/
 
-"przibram":
-  - firstname: ["Karl"]
-    url: https://link.springer.com/article/10.1007/s00016-019-00242-z
+japnanto:
+  - firstname: ["Jocelyn"]
+    url: https://www.ucl.ac.uk/
 
-"schrodinger":
-  - firstname: ["Erwin"]
-    url: https://en.wikipedia.org/wiki/Erwin_Schr%C3%B6dinger
+lu:
+  - firstname: ["Ziwen"]
+    url: https://www.georgetown.edu/
 
-"lorentz":
-  - firstname: ["Hendrik Antoon"]
-    url: https://en.wikipedia.org/wiki/Hendrik_Lorentz
+martin:
+  - firstname: ["Eric"]
+    url: https://www.gre.ac.uk/
 
-"planck":
-  - firstname: ["Max"]
-    url: https://en.wikipedia.org/wiki/Max_Planck
+organokov:
+  - firstname: ["Mukharbek"]
+    url: https://www.cisco.com/
+
+patsiukova:
+  - firstname: ["Julia"]
+    url: https://www.westminster.ac.uk/
+
+shiranirad:
+  - firstname: ["Mozhdeh"]
+    url: https://www.southampton.ac.uk/
+
+tohme:
+  - firstname: ["Reem"]
+    url: https://www.lse.ac.uk/
+
+wang:
+  - firstname: ["Linfeng"]
+    url: https://www.lshtm.ac.uk/
+
+ezenwaka:
+  - firstname: ["Kingsley"]
+    url: https://www.bgs.ac.uk/
+
+leeming:
+  - firstname: ["Kathryn"]
+    url: https://www.bgs.ac.uk/
