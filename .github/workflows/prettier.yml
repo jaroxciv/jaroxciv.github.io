@@ -24,6 +24,18 @@ jobs:
       - name: Prettier Check 🔎
         id: prettier
         run: npx prettier . --check
+      - name: Prettier Auto-Fix 🛠️
+        if: ${{ failure() && steps.prettier.conclusion == 'failure' }}
+        run: npx prettier . --write
+
+      - name: Commit Prettier changes
+        if: ${{ failure() && steps.prettier.conclusion == 'failure' }}
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add .
+          git commit -m "style: format with Prettier"
+          git push
       - name: Create diff 📝
         # https://docs.github.com/en/actions/learn-github-actions/expressions#failure
         if: ${{ failure() }}
