@@ -58,24 +58,23 @@ layout: default
     </p>
   </header>
 
-{%- comment -%}
+  {%- comment -%}
+    The following block was disabled because the `{% toc %}` tag is not supported
+    by GitHub Pages and causes build errors.
+    Original block:
 
-  The following block was disabled because the `{% toc %}` tag is not supported
-  by GitHub Pages and causes build errors.
-  Original block:
-
-  <article class="post-content">
-    {% if page.toc and page.toc.beginning %}
-      <div id="table-of-contents">
-        {% toc %}
+    <article class="post-content">
+      {% if page.toc and page.toc.beginning %}
+        <div id="table-of-contents">
+          {% toc %}
+        </div>
+        <hr>
+      {% endif %}
+      <div id="markdown-content">
+        {{ content }}
       </div>
-      <hr>
-    {% endif %}
-    <div id="markdown-content">
-      {{ content }}
-    </div>
-  </article>
-{%- endcomment -%}
+    </article>
+  {%- endcomment -%}
 
   {% if page.citation %}
     {% include citation.liquid %}

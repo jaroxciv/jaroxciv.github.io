@@ -31,7 +31,7 @@ latest_posts:
   limit: 3 # leave blank to include all the blog posts
 ---
 
-Hello! 👋 Thanks for stopping by. 
+Hello! 👋 Thanks for stopping by.
 
 I'm Javier Alfaro, a geospatial data scientist and AI engineer based in London, currently developing advanced geospatial and AI solutions at [GeoKapti](https://www.geokapti.nl/). My background blends Geographic Data Science, Remote Sensing, and Machine Learning for urban analytics and spatial intelligence.
 

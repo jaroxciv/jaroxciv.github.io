@@ -7,7 +7,8 @@ nav: true
 nav_order: 6
 ---
 
-## University Lecturer  
+## University Lecturer
+
 **Higher School of Economics and Business**  
 _April 2022 – June 2023_
 
@@ -16,7 +17,8 @@ _April 2022 – June 2023_
 - **Intermediate Python** (Undergraduate)  
   [View slides](https://docs.google.com/presentation/d/1YPvo3rL2FI3XG2txZ-HbR-n_QXyPrpvq8zSFSI3iays/edit?usp=sharing)
 
-## Teaching Assistant  
+## Teaching Assistant
+
 **Higher School of Economics and Business**  
 _August 2018 – December 2020_
 
