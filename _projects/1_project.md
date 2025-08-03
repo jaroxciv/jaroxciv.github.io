@@ -1,81 +1,87 @@
 ---
 layout: page
-title: project 1
-description: with background image
-img: assets/img/12.jpg
+title: SQL Agent – LLM-Powered Natural Language SQL for PostgreSQL
+description: Chat with your database using advanced AI. Modular, production-ready LangGraph & Streamlit app for natural language querying of the Chinook database.
+img: assets/img/proj1/robot.png
 importance: 1
 category: work
-related_publications: true
+related_publications: false
 ---
 
-Every project has a beautiful feature showcase page.
-It's easy to include images in a flexible 3-column grid format.
-Make your photos 1/3, 2/3, or full width.
+<div class="mb-3">
+    <a class="btn btn-primary" href="https://github.com/jaroxciv/sql-agent" target="_blank">
+        <i class="fab fa-github"></i> View Project on GitHub
+    </a>
+</div>
 
-To give your project a background in the portfolio page, just add the img tag to the front matter like so:
+## Overview
 
-    ---
-    layout: page
-    title: project
-    description: a project with a background image
-    img: /assets/img/12.jpg
-    ---
+This project demonstrates a **production-grade, fully modular LLM-based SQL Agent** for natural language question answering over a real relational database.
 
-<div class="row">
+**Key features:**
+- Ask business questions in natural language — get real SQL queries and concise, interpretable summaries.
+- Powered by OpenAI or Mistral LLMs, running via [LangGraph](https://github.com/langchain-ai/langgraph) and [Streamlit](https://streamlit.io/).
+- **Database:** Uses the [Chinook](https://github.com/lerocha/chinook-database) demo database in PostgreSQL, with full schema introspection and human-readable notes on table relationships.
+- Provides business insights, analysis summaries, and automatically interprets the SQL output for non-technical users.
+
+## Demo
+
+<div class="row mb-3">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/1.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid loading="eager" path="assets/img/proj1/sql-agent-question.jpeg" title="Ask in plain English" class="img-fluid rounded z-depth-1" %}
     </div>
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/3.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid loading="eager" path="assets/img/proj1/sql-agent-generated-code.jpeg" title="Get SQL + summary" class="img-fluid rounded z-depth-1" %}
     </div>
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/5.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid loading="eager" path="assets/img/proj1/sql-agent-summary.jpeg" title="Business-friendly answers" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
-    Caption photos easily. On the left, a road goes through a tunnel. Middle, leaves artistically fall in a hipster photoshoot. Right, in another hipster photoshoot, a lumberjack grasps a handful of pine needles.
-</div>
-<div class="row">
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/5.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    This image can also have a caption. It's like magic.
+    <b>Left:</b> Ask questions in natural language.<br>
+    <b>Middle:</b> View the generated SQL and summary.<br>
+    <b>Right:</b> Business users get direct insights.
 </div>
 
-You can also put regular text between your rows of images, even citations {% cite einstein1950meaning %}.
-Say you wanted to write a bit about your project before you posted the rest of the images.
-You describe how you toiled, sweated, _bled_ for your project, and then... you reveal its glory in the next row of images.
+## Example Use Cases
 
-<div class="row justify-content-sm-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm-4 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    You can also have artistically styled 2/3 + 1/3 images, like these.
+- **Who was the top sales agent by total invoice sales in 2023?**
+- **Which playlist contains the highest number of tracks, and how many does it have?**
+- **List all customers from Brazil, including their full names and total amount spent.**
+
+<div class="mt-4 mb-3">
+    <a class="btn btn-success" href="https://github.com/jaroxciv/sql-agent" target="_blank">
+        <i class="fab fa-github"></i> Try it or read the code on GitHub!
+    </a>
 </div>
 
-The code is simple.
-Just wrap your images with `<div class="col-sm">` and place them inside `<div class="row">` (read more about the <a href="https://getbootstrap.com/docs/4.4/layout/grid/">Bootstrap Grid</a> system).
-To make images responsive, add `img-fluid` class to each; for rounded corners and shadows use `rounded` and `z-depth-1` classes.
-Here's the code for the last row of images above:
+---
 
-{% raw %}
+## Technical Stack
 
-```html
-<div class="row justify-content-sm-center">
-  <div class="col-sm-8 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-  </div>
-  <div class="col-sm-4 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-  </div>
-</div>
-```
+- **LangGraph**: stateful multi-node workflow orchestration
+- **PostgreSQL**: for both demo data (Chinook) and LLM memory/persistence
+- **Streamlit**: live, interactive frontend
+- **SQLAlchemy**: schema and data introspection
+- **Pydantic**: strict models for schema/inputs
+- **Modern LLMs**: Mistral, OpenAI, or plug your own
+- **Docker**: local development, with easy launch of database and pgAdmin
 
-{% endraw %}
+---
+
+## Repo
+
+🔗 [github.com/jaroxciv/sql-agent](https://github.com/jaroxciv/sql-agent)
+
+- Full install and Docker setup instructions in the README.
+
+---
+
+## Why it matters
+
+This project bridges the gap between technical and business users by making relational data accessible with *no code required*. The modular codebase is ideal for extension, deployment, and research.
+
+---
+
+Feel free to [contact me](mailto:javi.alfaro94@gmail.com) for questions or collaboration!
+
