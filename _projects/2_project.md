@@ -20,6 +20,7 @@ A modular pipeline for extracting, analyzing, and visualizing urban growth patte
 Focus: **Metropolitan Area of San Salvador (AMSS), El Salvador**.
 
 ## 🚀 What does it do?
+
 - Maps year-on-year **building growth** (counts, area, and height) using the Google Open Buildings Temporal Dataset.
 - Uses **H3 hexagonal grids** for high-res spatial analysis (~100m).
 - Fully automated workflow: feature extraction, growth computation, and mapping.
@@ -52,6 +53,7 @@ Focus: **Metropolitan Area of San Salvador (AMSS), El Salvador**.
 ## 💡 How does it work?
 
 The workflow consists of modular Python scripts:
+
 - AOI and grid setup
 - Feature extraction via Google Earth Engine
 - Growth computation
@@ -76,5 +78,4 @@ All driven by a **master script** for reproducibility.
 
 Project lead: Javier Alfaro
 
-*Made with ❤️ for open urban analytics.*
-
+_Made with ❤️ for open urban analytics._

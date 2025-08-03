@@ -19,6 +19,7 @@ related_publications: false
 This project demonstrates a **production-grade, fully modular LLM-based SQL Agent** for natural language question answering over a real relational database.
 
 **Key features:**
+
 - Ask business questions in natural language — get real SQL queries and concise, interpretable summaries.
 - Powered by OpenAI or Mistral LLMs, running via [LangGraph](https://github.com/langchain-ai/langgraph) and [Streamlit](https://streamlit.io/).
 - **Database:** Uses the [Chinook](https://github.com/lerocha/chinook-database) demo database in PostgreSQL, with full schema introspection and human-readable notes on table relationships.
@@ -79,9 +80,8 @@ This project demonstrates a **production-grade, fully modular LLM-based SQL Agen
 
 ## Why it matters
 
-This project bridges the gap between technical and business users by making relational data accessible with *no code required*. The modular codebase is ideal for extension, deployment, and research.
+This project bridges the gap between technical and business users by making relational data accessible with _no code required_. The modular codebase is ideal for extension, deployment, and research.
 
 ---
 
 Feel free to [contact me](mailto:javi.alfaro94@gmail.com) for questions or collaboration!
-
