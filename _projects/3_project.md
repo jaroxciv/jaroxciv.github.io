@@ -22,6 +22,7 @@ It combines **multi-center, multi-distance analysis** with **interactive mapping
 ## ✨ Key Features
 
 ### 🧮 Core Analysis
+
 - **Multi-center isochrones:** Multiple origins, each with custom travel times.
 - **Time banding:** Automatic bands (e.g., equally spaced (1-5)).
 - **POI coverage analysis:** Count points of interest within each band.
@@ -29,15 +30,18 @@ It combines **multi-center, multi-distance analysis** with **interactive mapping
 - **Out-of-band detection:** Find POIs not covered by any isochrone.
 
 ### 🧭 Multiple Routing Providers
+
 - **OSMnx** – free, global coverage (drive/walk/bike)
 - **Mapbox** – high-performance routing with real traffic data
 - **Iso4App** – detailed European coverage, multiple modes
 
 ### 🖥️ Interfaces
+
 - **Interactive Web App:** Streamlit-based, click-to-add centers, real-time visualisation, spatial analysis dashboard.
 - **⚡ REST API:** FastAPI backend for programmatic access, GeoJSON/statistics outputs.
 
 ### ⚙️ Technical Highlights
+
 - Python 3.12+, Pydantic, async processing
 - Scientific colormaps via Matplotlib
 - Caching and efficient spatial operations
