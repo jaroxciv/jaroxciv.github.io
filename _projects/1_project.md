@@ -70,9 +70,7 @@ This project demonstrates a **production-grade, fully modular LLM-based SQL Agen
 
 ---
 
-## Repo
-
-🔗 [github.com/jaroxciv/sql-agent](https://github.com/jaroxciv/sql-agent)
+## 🔗 [GitHub Repo](https://github.com/jaroxciv/sql-agent)
 
 - Full install and Docker setup instructions in the README.
 
