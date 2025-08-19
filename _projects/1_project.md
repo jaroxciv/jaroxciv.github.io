@@ -2,7 +2,7 @@
 layout: page
 title: SQL Agent – LLM-Powered Natural Language SQL for PostgreSQL
 description: Chat with your database using advanced AI. Modular, production-ready LangGraph & Streamlit app for natural language querying of the Chinook database.
-img: assets/img/proj1/robot.png
+img: assets/img/proj1/llms.png
 importance: 1
 category: work
 related_publications: false
