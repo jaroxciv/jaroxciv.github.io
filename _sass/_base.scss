@@ -1423,3 +1423,117 @@ figure.cover {
     color: #23212d !important;
   }
 }
+
+// LaTeX booktabs look: three rules, no verticals, tabular numerals, notes under the table.
+.booktabs {
+  margin: 1.75rem 0;
+
+  // the site's body weight is light, so "bolder" alone barely shows
+  b {
+    font-weight: 700;
+  }
+
+  figcaption {
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+
+    b {
+      color: var(--global-theme-color);
+      font-variant: small-caps;
+      letter-spacing: 0.04em;
+    }
+  }
+
+  .scroll {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    border-top: 2px solid var(--global-text-color);
+    border-bottom: 2px solid var(--global-text-color);
+    font-variant-numeric: tabular-nums lining-nums;
+    white-space: nowrap;
+
+    th,
+    td {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.95rem;
+    }
+
+    th:first-child,
+    td:first-child {
+      padding-left: 0.25rem;
+    }
+
+    thead th {
+      border-bottom: 1px solid var(--global-text-color);
+      font-weight: 600;
+    }
+
+    .num {
+      text-align: right;
+    }
+
+    .ref {
+      color: var(--global-text-color-light);
+      font-size: 0.85em;
+    }
+
+    tr.ours td {
+      background: var(--global-code-bg-color); // for browsers without color-mix()
+      background: color-mix(in srgb, var(--global-theme-color) 10%, transparent);
+    }
+  }
+
+  .booktabs-note {
+    color: var(--global-text-color-light);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+  }
+}
+
+// Agora findings: the three organization forms, drawn in the theme's own greys.
+.org-forms {
+  display: flex;
+  gap: 0.75rem;
+
+  figure {
+    flex: 1;
+    margin: 0;
+    text-align: center;
+  }
+
+  svg {
+    width: 100%;
+    height: auto;
+  }
+
+  line,
+  circle,
+  rect {
+    stroke: var(--global-text-color-light);
+    stroke-width: 0.75;
+  }
+
+  .node {
+    fill: var(--global-bg-color);
+  }
+
+  .hub {
+    fill: var(--global-divider-color);
+  }
+
+  figcaption {
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+}
+
+// Figures drawn in black ink on white or transparent: blend in light mode, sit on a light panel in dark mode.
+html[data-theme="dark"] img.on-paper {
+  background: $white-color;
+  padding: 0.5rem;
+}
