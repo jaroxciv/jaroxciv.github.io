@@ -1,0 +1,1486 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agora Market Loop</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=STIX+Two+Text:ital@0;1&display=swap">
+<style>
+:root{--ink:#1d1d1f;--muted:#6b6b72;--line:#2b2b2b;--soft:#9a9aa3;--paper:#ffffff;--wash:#F7F7F8;
+  --disc:#2E8A57;--disc-w:#E9F5EE;--truth:#3456C2;--truth-w:#ECF0FB;--econ:#E08A00;--econ-w:#FFF4E2;
+  --share:#7448BB;--share-w:#F3EDFB;--bad:#C2423B;--bad-w:#FBEAE9;--sans:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"STIX Two Text",Georgia,serif;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 var(--sans)}
+.wrap{max-width:1000px;margin:0 auto;padding-inline:16px;padding-block:28px 40px}
+.kicker{font:700 12px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--econ)}
+h1{margin:4px 0 6px;font:600 28px/1.2 var(--sans);text-wrap:balance}
+.lede{margin:0 0 18px;color:var(--muted);max-width:66ch}
+.scroll{overflow-x:auto}
+svg{display:block;width:100%;min-width:720px;height:auto;font-family:var(--sans);user-select:none}
+svg text{fill:var(--ink)}
+.region{fill:#FFFCF9;stroke:var(--line);stroke-width:2;stroke-dasharray:9 7}
+.region.cool{fill:#FAFAFB;stroke:var(--soft)}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em}
+.rsub{font-size:13px;fill:var(--muted)!important}
+.box{fill:var(--wash);stroke:var(--line);stroke-width:2.2;transition:stroke .25s,fill .25s}
+.box.panel{fill:var(--paper)}
+.title{font-size:15px;font-weight:600}
+.sub{font-size:11.5px;fill:var(--muted)!important}
+.mini{font-size:11px;fill:var(--muted)!important}
+.on .box,.box.on{stroke:var(--econ);fill:#FFF6EA}
+.on.truth .box,.box.on.truth{stroke:var(--truth);fill:var(--truth-w)}
+.on.share .box,.box.on.share{stroke:var(--share);fill:var(--share-w)}
+.arrow{stroke:var(--line);stroke-width:2;fill:none}
+.guide{stroke:var(--soft);stroke-width:1.5;fill:none;stroke-dasharray:5 5}
+.lbl{font-size:11px;fill:#8a8a92!important}
+.agent{transition:opacity .5s}
+.agent.busy{filter:drop-shadow(0 0 5px rgba(46,138,87,.9))}
+.agent.dead{opacity:.22}
+.agent .nm{font-size:11px;font-weight:700;fill:#3d4a63!important;text-anchor:middle}
+.pill rect{stroke-width:1.4}
+.pill text{font-size:11.5px;font-weight:700;text-anchor:middle}
+.pill.win rect{fill:var(--disc-w);stroke:var(--disc)} .pill.win text{fill:#157347!important}
+.pill.lose rect{fill:var(--bad-w);stroke:var(--bad)} .pill.lose text{fill:var(--bad)!important}
+.pill.info rect{fill:var(--econ-w);stroke:var(--econ)} .pill.info text{fill:#9a5a00!important}
+.fade{transition:opacity .3s}
+.tok{pointer-events:none}
+.bar{display:flex;gap:14px;align-items:flex-start;justify-content:space-between;margin-top:10px;border-top:1px solid #e6e6ea;padding-top:12px}
+.status{min-height:3em;max-width:70ch;min-width:0}
+.status b{font-weight:600}
+.k-disc{color:var(--disc);font-weight:600}.k-truth{color:var(--truth);font-weight:600}.k-econ{color:#b06d00;font-weight:600}
+.k-share{color:var(--share);font-weight:600}.k-bad{color:var(--bad);font-weight:600}
+.ctrls{display:flex;gap:8px;flex:none}
+button{font:600 13px var(--sans);color:var(--ink);background:#fff;border:1.5px solid #cfcfd6;border-radius:8px;padding:6px 14px;cursor:pointer}
+button:hover{border-color:var(--econ)}
+button:focus-visible{outline:2px solid var(--econ);outline-offset:2px}
+.note{margin-top:14px;font-size:13px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){.agent,.fade{transition:none}}
+.seeking svg *{transition:none!important}
+.timeline{margin-top:8px}
+.progress{--p:0%;display:block;width:100%;height:28px;margin:0;padding:0;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;touch-action:pan-y}
+.progress::-webkit-slider-runnable-track{height:5px;border-radius:999px;background:linear-gradient(to right,#FFC77A 0%,var(--econ) var(--p),#e9e9ee var(--p),#e9e9ee 100%)}
+.progress::-moz-range-track{height:5px;border-radius:999px;background:linear-gradient(to right,#FFC77A 0%,var(--econ) var(--p),#e9e9ee var(--p),#e9e9ee 100%)}
+.progress::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:15px;height:15px;margin-top:-5px;border:3px solid #fff;border-radius:50%;background:var(--econ);box-shadow:0 1px 5px rgba(0,0,0,.2);transition:box-shadow .15s}
+.progress::-moz-range-thumb{box-sizing:border-box;width:15px;height:15px;border:3px solid #fff;border-radius:50%;background:var(--econ);box-shadow:0 1px 5px rgba(0,0,0,.2);transition:box-shadow .15s}
+.progress:hover::-webkit-slider-thumb,.progress:active::-webkit-slider-thumb{box-shadow:0 0 0 5px rgba(224,138,0,.15),0 1px 5px rgba(0,0,0,.2)}
+.progress:hover::-moz-range-thumb,.progress:active::-moz-range-thumb{box-shadow:0 0 0 5px rgba(224,138,0,.15),0 1px 5px rgba(0,0,0,.2)}
+.progress:focus-visible{outline:2px solid var(--econ);outline-offset:3px;border-radius:8px}
+.status{border-left:3px solid var(--econ);padding-left:12px}
+</style>
+<style>
+/* embedded in another page (an iframe, or ?embed): no version label, and the host's own background shows through */
+html.embed body{background:transparent}
+html.embed .kicker{display:none}
+</style>
+<script>
+(function () {
+  var framed; try { framed = window.self !== window.top; } catch (e) { framed = true; }
+  if (framed || /[?&]embed\b/.test(location.search)) document.documentElement.classList.add('embed');
+})();
+</script>
+<script>
+/* the theme: the host page's data-theme when embedded on the same origin, else the system setting */
+(function () {
+  var root = document.documentElement, q = window.matchMedia && matchMedia('(prefers-color-scheme: dark)'), host = null;
+  try { if (window.self !== window.top) host = window.parent.document.documentElement; } catch (e) { host = null; }
+  function current() {
+    var t = host && host.dataset ? host.dataset.theme : null;
+    return t === 'dark' || t === 'light' ? t : (q && q.matches ? 'dark' : 'light');
+  }
+  function apply() {
+    var t = current(), dark = t === 'dark';
+    if (root.classList.contains('dark') === dark && root.style.colorScheme === t) return;
+    root.classList.toggle('dark', dark); root.style.colorScheme = t;
+    window.dispatchEvent(new CustomEvent('themechange', { detail: dark }));
+  }
+  apply();
+  if (host && window.MutationObserver) new MutationObserver(apply).observe(host, { attributes: true, attributeFilter: ['data-theme'] });
+  if (q && q.addEventListener) q.addEventListener('change', apply);
+})();
+</script>
+</head><body>
+<style>
+/* one colour per plane, as in the MIT deck: discovery green, truth blue, economy amber, culture purple; time is ink */
+.kicker{color:var(--muted)}
+.region{stroke-dasharray:none;stroke-width:1.2}
+.region.market{fill:#FFFDF9;stroke:#F3E3C8}
+.region.culture{fill:#FAF7FE;stroke:#D9C9F2}
+.box{stroke-width:1.6}
+.box.panel.disc{stroke:#A9D3BA}
+.truth .box{stroke:#9DB0E6;fill:#F5F7FD}
+.econ .box{stroke:#E9C88F;fill:#FFFBF4}
+.econ.on .box{stroke:var(--econ);fill:#FFF1DA}
+.truth.on .box{stroke:var(--truth);fill:var(--truth-w)}
+.arrow{stroke:#4b5262;stroke-width:1.8}
+.status{border-left-color:#c9c9d2}
+.progress::-webkit-slider-runnable-track{background:linear-gradient(to right,#9a9aa3 0%,var(--ink) var(--p),#e9e9ee var(--p),#e9e9ee 100%)}
+.progress::-moz-range-track{background:linear-gradient(to right,#9a9aa3 0%,var(--ink) var(--p),#e9e9ee var(--p),#e9e9ee 100%)}
+.progress::-webkit-slider-thumb{background:var(--ink)} .progress::-moz-range-thumb{background:var(--ink)}
+.progress:focus-visible{outline-color:var(--ink)}
+button:hover{border-color:var(--ink)} button:focus-visible{outline-color:var(--ink)}
+.agent.busy{filter:none}
+.agent.dead{opacity:1!important}.agent.dead .nm{fill:#9a9aa3!important;text-decoration:line-through}
+.rip{font-size:22px;font-weight:400;fill:#C2423B!important;text-anchor:middle;opacity:0;transition:opacity .4s}.agent.dead .rip{opacity:1}
+.built{fill:none;stroke:#7448BB;stroke-width:1.6;opacity:.7}
+.lineage{fill:none;stroke:#E08A00;stroke-width:2.4;stroke-dasharray:6 5}
+.wtrack{fill:#ECEDF1}.wbar{fill:#E08A00}
+.status{max-width:none;flex:1}
+/* bold edges; deep ink and larger dots so the orbs read as solid on white */
+.box{stroke-width:2.4!important}
+.region{stroke-width:2!important}
+.region.market{stroke:#E2BC7A!important}
+.region.culture{stroke:#BFA6EA!important}
+.truth .box{stroke:#7E95DB} .econ .box{stroke:#DDB06A}
+.box.panel.disc{stroke:#3FA56E!important;fill:transparent!important}
+.slot rect{fill:#fff;stroke:#d9cdee;stroke-dasharray:4 4}
+.by{font-size:10.5px;font-weight:700;fill:#7448BB!important;text-anchor:start}
+.by.gone{fill:#b9aed0!important;text-decoration:line-through}
+.shelf .tok{transition:filter .3s}
+.glow{filter:drop-shadow(0 0 5px rgba(116,72,187,.75))}
+</style>
+<div class="wrap">
+  <div class="kicker">the market loop · v18</div>
+  <h1>Collective learning as an adaptive algorithmic market</h1>
+  <div class="scroll" id="figure">
+  <svg class="fig" viewBox="0 0 960 640" role="img" aria-label="Animated diagram: agents publish and adopt skills through a shared culture, submit to an official grader, are credited along lineage and pay rent, while the best verified score rises past gold.">
+    <defs>
+      <symbol id="cube" viewBox="0 0 40 42">
+        <polygon points="20,1.5 38.5,10.5 20,19.5 1.5,10.5" fill="#E6ECF5" stroke="#4A5A75" stroke-width="1.6" stroke-linejoin="round"/>
+        <polygon points="1.5,10.5 20,19.5 20,40.5 1.5,31.5" fill="#CBD6E6" stroke="#4A5A75" stroke-width="1.6" stroke-linejoin="round"/>
+        <polygon points="20,19.5 38.5,10.5 38.5,31.5 20,40.5" fill="#B3C2D9" stroke="#4A5A75" stroke-width="1.6" stroke-linejoin="round"/>
+      </symbol>
+      <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,.5 L10,5 L0,9.5z" fill="#4b5262"/></marker>
+    </defs>
+
+    <text x="36" y="34" class="eyebrow" style="fill:#3456C2">BEST SCORE</text>
+    <line x1="60" y1="70" x2="910" y2="70" stroke="#2b2b2b" stroke-width="1.8" marker-end="url(#ah)"/>
+    <line x1="740" y1="58" x2="740" y2="82" stroke="#B8912E" stroke-width="3"/>
+    <text x="740" y="100" text-anchor="middle" font-size="12" font-weight="700" style="fill:#8C6D1F">gold</text>
+    <circle cx="110" cy="70" r="4" fill="#2b2b2b"/><text class="mini" x="110" y="100" text-anchor="middle">seed</text>
+    <path id="trail" d="M110,70" fill="none" stroke="#3456C2" stroke-width="3"/>
+    <circle id="best" cx="110" cy="70" r="9" fill="#ECF0FB" stroke="#3456C2" stroke-width="2.5"/>
+    <g transform="translate(0,104)">
+    <rect class="region market" x="12" y="12" width="936" height="372" rx="22"/>
+    <text x="36" y="42"><tspan class="eyebrow" fill="#E08A00">THE MARKET</tspan><tspan class="rsub" dx="10">one frozen model, many agents</tspan></text>
+    <text id="round" class="rsub" x="924" y="42" text-anchor="end">round 1</text>
+
+    <rect class="box panel disc" x="36" y="60" width="300" height="306" rx="14"/>
+    <text class="title" x="54" y="86">Agents</text>
+    <text class="sub" x="54" y="104">bar = wealth</text>
+    <foreignObject x="36" y="60" width="300" height="306"><canvas id="orbs" xmlns="http://www.w3.org/1999/xhtml" style="width:300px;height:306px;display:block"></canvas></foreignObject>
+    <g id="agents"></g>
+
+    <g id="grader" class="truth"><rect class="box" x="420" y="110" width="170" height="84" rx="14"/>
+      <text class="title" x="505" y="147" text-anchor="middle">Official grader</text>
+      <text class="sub" x="505" y="167" text-anchor="middle">one candidate at a time</text></g>
+    <g id="holding" class="truth"><rect class="box panel" x="690" y="70" width="234" height="124" rx="14"/>
+      <text class="title" x="708" y="96">Holding</text>
+      <text class="sub" x="708" y="114">best verified version · every lease starts here</text>
+      <text id="hold" x="807" y="166" text-anchor="middle" font-size="26" font-weight="600" font-family="var(--serif)" font-style="italic">seed</text></g>
+    <g id="credit" class="econ"><rect class="box" x="420" y="250" width="170" height="84" rx="14"/>
+      <text class="title" x="505" y="287" text-anchor="middle">Credit</text>
+      <text class="sub" x="505" y="307" text-anchor="middle">a gain split along lineage</text></g>
+    <g id="rent" class="econ"><rect class="box" x="690" y="250" width="234" height="84" rx="14"/>
+      <text class="title" x="807" y="287" text-anchor="middle">Rent</text>
+      <text class="sub" x="807" y="307" text-anchor="middle">every live agent pays, every step</text></g>
+
+    <path class="arrow" d="M336,152 L416,152" marker-end="url(#ah)"/><text class="lbl" x="376" y="144" text-anchor="middle">submit</text>
+    <path class="arrow" d="M590,152 L686,152" marker-end="url(#ah)"/><text class="lbl" x="638" y="144" text-anchor="middle">better</text>
+    <path class="arrow" d="M505,194 L505,246" marker-end="url(#ah)"/><text class="lbl" x="513" y="224">gain</text>
+    <path class="arrow" d="M336,352 L807,352 L807,338" marker-end="url(#ah)"/><text class="lbl" x="640" y="346" text-anchor="middle">rent</text>
+
+    <g id="culture">
+      <rect class="region culture" x="12" y="396" width="936" height="124" rx="22"/>
+      <text x="36" y="424"><tspan class="eyebrow" fill="#7448BB">CULTURE</tspan><tspan class="rsub" dx="10">skills with their code, and every grade · public, adopted voluntarily</tspan></text>
+      <g id="slots"></g>
+    </g>
+
+    <g id="tokens"></g>
+    </g>
+  </svg>
+  </div>
+  <div class="timeline"><input type="range" class="progress" id="progress" min="0" max="1" step="1" value="0" aria-label="Animation progress"></div>
+  <div class="bar"><div class="status" id="status" aria-live="polite"></div>
+    <div class="ctrls"><button id="play" type="button">Pause</button><button id="restart" type="button">Restart</button></div></div>
+  <p class="note">Illustrative run: agents, wealth and scores are not from a run. Shapes mark differentiation, not a role. Drag the timeline to any moment.</p>
+</div>
+<script>
+/* thinking-orbs 0.3.2 engine, by Jakub Antalik (github.com/Jakubantalik/Libraries.dev), inlined unchanged.
+MIT License
+
+Copyright (c) 2026 Jakub Antalik
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+var Orbs = (function () {
+function lerp(a, b, f) {
+  return a + (b - a) * f;
+}
+function frac(x) {
+  return x - Math.floor(x);
+}
+function vnoise(x, y) {
+  const xi = Math.floor(x);
+  const yi = Math.floor(y);
+  let fx = x - xi;
+  let fy = y - yi;
+  fx = fx * fx * (3 - 2 * fx);
+  fy = fy * fy * (3 - 2 * fy);
+  const a = hashD(xi, yi);
+  const b = hashD(xi + 1, yi);
+  const c = hashD(xi, yi + 1);
+  const d = hashD(xi + 1, yi + 1);
+  return a + (b - a) * fx + (c - a) * fy + (a - b - c + d) * fx * fy;
+}
+function hashD(a, b) {
+  const h = Math.sin(a * 12.9898 + b * 78.233) * 43758.5453;
+  return h - Math.floor(h);
+}
+function fibDir(i, n) {
+  const golden = Math.PI * (3 - Math.sqrt(5));
+  const y = 1 - 2 * (i + 0.5) / n;
+  const rad = Math.sqrt(1 - y * y);
+  const a = i * golden;
+  return [rad * Math.cos(a), y, rad * Math.sin(a)];
+}
+function angleDelta(a, b) {
+  return Math.atan2(Math.sin(a - b), Math.cos(a - b));
+}
+function makeProj(yaw, tilt, cx, cy, scale) {
+  const st = Math.sin(tilt);
+  const ct = Math.cos(tilt);
+  const sy = Math.sin(yaw);
+  const cyw = Math.cos(yaw);
+  return (x, y, z) => {
+    const x1 = x * cyw + z * sy;
+    const z1 = -x * sy + z * cyw;
+    const y1 = y * ct - z1 * st;
+    const z2 = y * st + z1 * ct;
+    return [cx + x1 * scale, cy - y1 * scale, z2];
+  };
+}
+function inkColor(w, alpha, dark, tint) {
+  if (!tint) {
+    const g = Math.round((dark ? 1 - w : w) * 255);
+    return `rgba(${g},${g},${g},${alpha})`;
+  }
+  const ramp = (c) => Math.round(dark ? c * (1 - w) : c + (255 - c) * w);
+  return `rgba(${ramp(tint.r)},${ramp(tint.g)},${ramp(tint.b)},${alpha})`;
+}
+function paint(ctx, dots, dark, rMin = 0.3, tint) {
+  for (const d of dots) {
+    const alpha = d.a ?? 1;
+    const w = Math.min(1, Math.max(0, d.white));
+    ctx.fillStyle = inkColor(w, alpha, dark, tint);
+    ctx.beginPath();
+    ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+function paintLines(ctx, lines, dark, tint) {
+  for (const l of lines) {
+    const alpha = l.a ?? 1;
+    const w = Math.min(1, Math.max(0, l.white));
+    ctx.strokeStyle = inkColor(w, alpha, dark, tint);
+    ctx.lineWidth = l.w;
+    ctx.beginPath();
+    ctx.moveTo(l.x1, l.y1);
+    ctx.lineTo(l.x2, l.y2);
+    ctx.stroke();
+  }
+}
+function finalizeFrame(dots, lines, rMin = 0.3) {
+  const visible = [];
+  for (const d of dots) {
+    if ((d.a ?? 1) < 0.02) continue;
+    d.r = Math.max(rMin, d.r);
+    visible.push(d);
+  }
+  visible.sort((a, b) => a.z - b.z);
+  return { dots: visible, lines: lines.filter((l) => (l.a ?? 1) >= 0.02) };
+}
+function paintFrame(ctx, frame, dark, tint) {
+  if (frame.lines.length) paintLines(ctx, frame.lines, dark, tint);
+  paint(ctx, frame.dots, dark, 0.3, tint);
+}
+function radiusScale(size, pow) {
+  return (size / 300) ** pow;
+}
+const COUNT_PAIRS = [
+  ["latRings", "lonDensity"],
+  ["rings", "lonDensity"],
+  ["lanes", "segs"]
+];
+const COUNT_KEYS = ["orbitN", "ghostN", "nodeN", "strandN", "signals"];
+const ICON_DENSITY_KEYS = ["iconD"];
+const RADIUS_KEYS = [
+  "rBase",
+  "rDepth",
+  "rActive",
+  "rDot",
+  "ghostR",
+  "partR",
+  "partRDepth",
+  "nodeR",
+  "nodeRDepth"
+];
+function scaleCounts(opts, scale) {
+  const out = { ...opts };
+  const done = /* @__PURE__ */ new Set();
+  const rt = Math.sqrt(scale);
+  for (const [a, b] of COUNT_PAIRS) {
+    const va = out[a];
+    const vb = out[b];
+    if (va != null && vb != null && !done.has(a) && !done.has(b)) {
+      out[a] = Math.max(2, Math.round(va * rt));
+      out[b] = Math.max(2, Math.round(vb * rt));
+      done.add(a);
+      done.add(b);
+    }
+  }
+  for (const k of COUNT_KEYS) {
+    const v = out[k];
+    if (v != null && v !== 0 && !done.has(k)) out[k] = Math.max(1, Math.round(v * scale));
+  }
+  for (const k of ICON_DENSITY_KEYS) {
+    const v = out[k];
+    if (v != null) out[k] = Math.max(0.02, v * scale);
+  }
+  return out;
+}
+function scaleRadii(opts, scale) {
+  const out = { ...opts };
+  for (const k of RADIUS_KEYS) {
+    const v = out[k];
+    if (v != null) out[k] = v * scale;
+  }
+  out.rSizeMul = (out.rSizeMul ?? 1) * scale;
+  return out;
+}
+function countDots(opts) {
+  let total = 0;
+  const done = /* @__PURE__ */ new Set();
+  for (const [a, b] of COUNT_PAIRS) {
+    const va = opts[a];
+    const vb = opts[b];
+    if (va != null && vb != null && !done.has(a) && !done.has(b)) {
+      total += va * vb;
+      done.add(a);
+      done.add(b);
+    }
+  }
+  for (const k of COUNT_KEYS) {
+    const v = opts[k];
+    if (v != null && v !== 0 && !done.has(k)) total += v;
+  }
+  return Math.round(total);
+}
+const BASE_PROFILES = {
+  globe: {
+    latRings: 17,
+    lonDensity: 44,
+    rBase: 0.6,
+    rDepth: 1.7,
+    rBoost: 1,
+    inkFar: 0.62,
+    inkSpan: 0.54,
+    rsPow: 0.6,
+    rMin: 0.3
+  },
+  orbits: {
+    orbitN: 12,
+    ghostN: 40,
+    ghostR: 0.9,
+    ghostA: 0.5,
+    particles: 3,
+    partR: 1.2,
+    partRDepth: 1.6,
+    rsPow: 0.6,
+    rMin: 0.3
+  },
+  rubik: {
+    latRings: 15,
+    lonDensity: 40,
+    moveCount: 14,
+    rBase: 0.6,
+    rDepth: 1.7,
+    rActive: 0.3,
+    inkFar: 0.62,
+    inkSpan: 0.54,
+    rsPow: 0.6,
+    rMin: 0.3
+  },
+  wave: {
+    rings: 15,
+    lonDensity: 40,
+    rBase: 0.6,
+    rDepth: 1.7,
+    rsPow: 0.6,
+    rMin: 0.3
+  },
+  web: {
+    nodeN: 30,
+    thr: 0.72,
+    signals: 5,
+    nodeR: 1.4,
+    nodeRDepth: 1.8,
+    lineW: 0.8,
+    rsPow: 0.6,
+    rMin: 0.3
+  },
+  braid: {
+    strandN: 52,
+    turns: 3,
+    ghostN: 150,
+    rBase: 1.2,
+    rDepth: 1.8,
+    rsPow: 0.6,
+    rMin: 0.3
+  },
+  ribbon: {
+    lanes: 5,
+    segs: 88,
+    ghostN: 150,
+    rBase: 1.1,
+    rDepth: 1.7,
+    rsPow: 0.6,
+    rMin: 0.3
+  },
+  // ring shares ribbon's painter; faceOn cancels the camera tilt and moves
+  // the undulation onto the radius, and there is no ghost sphere behind it
+  ring: {
+    lanes: 5,
+    segs: 88,
+    ghostN: 0,
+    faceOn: 1,
+    rBase: 1.1,
+    rDepth: 1.7,
+    rsPow: 0.6,
+    rMin: 0.3
+  },
+  morph: {
+    rDot: 0.021,
+    iconD: 1,
+    rMin: 0.25
+  }
+};
+const frameBraid = (size, t, o) => {
+  const cx = size / 2;
+  const cy = size / 2;
+  const R = size / 2 * 0.76;
+  const pt = makeProj(t * 0.4, 0.3, cx, cy, 1);
+  const rs = radiusScale(size, o.rsPow ?? 0.6);
+  const dots = [];
+  const ghostN = o.ghostN ?? 150;
+  for (let i = 0; i < ghostN; i++) {
+    const d = fibDir(i, ghostN);
+    const [px, py, z] = pt(d[0] * R, d[1] * R, d[2] * R);
+    const depth = (z / R + 1) / 2;
+    dots.push({ x: px, y: py, z, r: 0.8 * rs, white: 0.78, a: 0.1 + 0.22 * depth });
+  }
+  const strandN = o.strandN ?? 52;
+  const turns = o.turns ?? 3;
+  for (let s = 0; s < 3; s++) {
+    const phase = s / 3 * 2 * Math.PI;
+    for (let i = 0; i < strandN; i++) {
+      const u = (frac(i / strandN + t * 0.045) * 2 - 1) * 0.96;
+      const surf = Math.sqrt(Math.max(0, 1 - u * u));
+      const endFade = Math.min(1, (1 - Math.abs(u)) / 0.1);
+      const a = u * Math.PI * turns + phase;
+      const weave = 1 + 0.075 * Math.sin(u * Math.PI * turns * 2 + phase * 2 + t * 0.8);
+      const rr = surf * R * weave;
+      const [px, py, zr] = pt(Math.cos(a) * rr, u * R * weave, Math.sin(a) * rr);
+      const depth = (zr / R + 1) / 2;
+      dots.push({
+        x: px,
+        y: py,
+        z: zr,
+        r: ((o.rBase ?? 1.2) + (o.rDepth ?? 1.8) * depth) * rs,
+        white: 0.55 - 0.45 * depth,
+        a: endFade * (0.45 + 0.55 * depth)
+      });
+    }
+  }
+  return finalizeFrame(dots, [], o.rMin);
+};
+function solveCycle(time, count, slotDur, rest) {
+  const cyc = 2 * count * slotDur + rest;
+  const tc = time % cyc;
+  const amount = new Array(count).fill(0);
+  let active = -1;
+  if (tc < 2 * count * slotDur) {
+    const slot = Math.floor(tc / slotDur);
+    const p = (tc - slot * slotDur) / slotDur;
+    const cl = Math.min(1, p / 0.7);
+    const ep = 1 - (1 - cl) ** 3;
+    if (slot < count) {
+      for (let i = 0; i < slot; i++) amount[i] = 1;
+      amount[slot] = ep;
+      active = slot;
+    } else {
+      const u = 2 * count - 1 - slot;
+      for (let i = 0; i < u; i++) amount[i] = 1;
+      amount[u] = 1 - ep;
+      active = u;
+    }
+  }
+  return { amount, active };
+}
+function applyMoves(pt3, moves, sc) {
+  let [x, y, z] = pt3;
+  let inActive = false;
+  for (let i = 0; i < moves.length; i++) {
+    if (sc.amount[i] <= 0) continue;
+    const mv = moves[i];
+    const coord = mv.axis === 0 ? x : mv.axis === 1 ? y : z;
+    if (coord < mv.lo || coord >= mv.hi) continue;
+    if (i === sc.active) inActive = true;
+    const a = mv.ang * sc.amount[i];
+    const ca = Math.cos(a);
+    const sa = Math.sin(a);
+    if (mv.axis === 0) {
+      const y2 = y * ca - z * sa;
+      z = y * sa + z * ca;
+      y = y2;
+    } else if (mv.axis === 1) {
+      const x2 = x * ca + z * sa;
+      z = -x * sa + z * ca;
+      x = x2;
+    } else {
+      const x2 = x * ca - y * sa;
+      y = x * sa + y * ca;
+      x = x2;
+    }
+  }
+  return [x, y, z, inActive];
+}
+function makeMoves(count) {
+  const moves = [];
+  for (let i = 0; i < count; i++) {
+    const axis = Math.min(2, Math.floor(hashD(i, 2.3) * 3));
+    const lo = -1 + 0.5 * Math.min(3, Math.floor(hashD(i, 5.9) * 4));
+    const dir = hashD(i, 7.7) < 0.5 ? 1 : -1;
+    moves.push({ axis, lo, hi: lo + 0.5, ang: dir * Math.PI / 2 });
+  }
+  return moves;
+}
+const frameGlobe = (size, t, o) => {
+  const spin = 0.5;
+  const cx = size / 2;
+  const cy = size / 2;
+  const radius = size / 2 * 0.82;
+  const tilt = 0.4 + 0.06 * Math.sin(t * 0.35);
+  const pt = makeProj(t * spin, tilt, cx, cy, radius);
+  const scan = t * (spin + (1.7 - spin) * (o.scanMul ?? 1));
+  const rs = radiusScale(size, o.rsPow ?? 0.6);
+  const dimBase = o.dimBase ?? 1;
+  const dots = [];
+  const latRings = o.latRings ?? 17;
+  const lonDensity = o.lonDensity ?? 44;
+  for (let li = 0; li <= latRings; li++) {
+    const lat = -Math.PI / 2 + li / latRings * Math.PI;
+    const cosLat = Math.cos(lat);
+    const sinLat = Math.sin(lat);
+    const lonCount = Math.max(1, Math.round(Math.abs(cosLat) * lonDensity));
+    for (let lj = 0; lj < lonCount; lj++) {
+      const lon = lj / lonCount * 2 * Math.PI;
+      const [px, py, z] = pt(cosLat * Math.cos(lon), sinLat, cosLat * Math.sin(lon));
+      const depth = (z + 1) / 2;
+      const d = angleDelta(lon + t * spin, scan);
+      const boost = Math.exp(-(d * d) / 0.18) * Math.max(0, z);
+      dots.push({
+        x: px,
+        y: py,
+        z,
+        r: ((o.rBase ?? 0.6) + (o.rDepth ?? 1.7) * depth + (o.rBoost ?? 1) * boost) * rs,
+        white: (o.inkFar ?? 0.62) - (o.inkSpan ?? 0.54) * depth,
+        // dimBase < 1 fades un-scanned dots so the meridian reads clearly
+        a: dimBase + (1 - dimBase) * Math.min(1, boost)
+      });
+    }
+  }
+  return finalizeFrame(dots, [], o.rMin);
+};
+const frameRubik = (size, t, o) => {
+  const cx = size / 2;
+  const cy = size / 2;
+  const R = size / 2 * 0.82;
+  const pt = makeProj(t * 0.55, 0.35 + 0.1 * Math.sin(t * 0.9), cx, cy, R);
+  const rs = radiusScale(size, o.rsPow ?? 0.6);
+  const moveCount = o.moveCount ?? 14;
+  const moves = makeMoves(moveCount);
+  const sc = solveCycle(t, moveCount, 0.42, 1.2);
+  const dots = [];
+  const latRings = o.latRings ?? 15;
+  const lonDensity = o.lonDensity ?? 40;
+  for (let li = 0; li <= latRings; li++) {
+    const lat = -Math.PI / 2 + li / latRings * Math.PI;
+    const cosLat = Math.cos(lat);
+    const sinLat = Math.sin(lat);
+    const lonCount = Math.max(1, Math.round(Math.abs(cosLat) * lonDensity));
+    for (let lj = 0; lj < lonCount; lj++) {
+      const lon = lj / lonCount * 2 * Math.PI;
+      const [x, y, z, inActive] = applyMoves([cosLat * Math.cos(lon), sinLat, cosLat * Math.sin(lon)], moves, sc);
+      const [px, py, zr] = pt(x, y, z);
+      const depth = (zr + 1) / 2;
+      dots.push({
+        x: px,
+        y: py,
+        z: zr,
+        r: ((o.rBase ?? 0.6) + (o.rDepth ?? 1.7) * depth + (inActive ? o.rActive ?? 0.3 : 0)) * rs,
+        white: (o.inkFar ?? 0.62) - (o.inkSpan ?? 0.54) * depth - (inActive ? 0.14 : 0)
+      });
+    }
+  }
+  return finalizeFrame(dots, [], o.rMin);
+};
+const frameWave = (size, t, o) => {
+  const cx = size / 2;
+  const cy = size / 2;
+  const R = size / 2 * 0.874;
+  const pt = makeProj(t * 0.18, 0.38, cx, cy, 1);
+  const rs = radiusScale(size, o.rsPow ?? 0.6);
+  const dots = [];
+  const rings = o.rings ?? 15;
+  const lonDensity = o.lonDensity ?? 40;
+  for (let ri = 0; ri <= rings; ri++) {
+    const lat = -Math.PI / 2 + ri / rings * Math.PI;
+    const cosLat = Math.cos(lat);
+    const sinLat = Math.sin(lat);
+    const w = 0.62 * Math.sin(t * 2.1 - ri * 0.52) + 0.38 * Math.sin(t * 1.27 + ri * 0.83);
+    const rr = R * (0.88 + 0.105 * w);
+    const lonCount = Math.max(1, Math.round(Math.abs(cosLat) * lonDensity));
+    for (let lj = 0; lj < lonCount; lj++) {
+      const lon = lj / lonCount * 2 * Math.PI;
+      const [px, py, z] = pt(cosLat * Math.cos(lon) * rr, sinLat * rr, cosLat * Math.sin(lon) * rr);
+      const depth = (z / R + 1) / 2;
+      const crest = Math.max(0, w);
+      dots.push({
+        x: px,
+        y: py,
+        z,
+        r: ((o.rBase ?? 0.6) + (o.rDepth ?? 1.7) * depth) * (1 + 0.4 * crest) * rs,
+        white: 0.66 - 0.56 * depth - 0.1 * crest
+      });
+    }
+  }
+  return finalizeFrame(dots, [], o.rMin);
+};
+function smoothE(x) {
+  return x * x * (3 - 2 * x);
+}
+function polyPath(verts) {
+  const V = verts.length;
+  const L = [];
+  let total = 0;
+  for (let i = 0; i < V; i++) {
+    const a = verts[i];
+    const b = verts[(i + 1) % V];
+    const l = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    L.push(l);
+    total += l;
+  }
+  return (f) => {
+    let target = f * total;
+    let i = 0;
+    while (target > L[i] && i < V - 1) {
+      target -= L[i];
+      i++;
+    }
+    const a = verts[i];
+    const b = verts[(i + 1) % V];
+    const ff = L[i] ? Math.min(1, target / L[i]) : 0;
+    return [a[0] + (b[0] - a[0]) * ff, a[1] + (b[1] - a[1]) * ff];
+  };
+}
+const CIRCLE = (f) => {
+  const a = -Math.PI / 2 + f * 2 * Math.PI;
+  return [Math.cos(a) * 0.24, Math.sin(a) * 0.24];
+};
+const TRIANGLE = polyPath([
+  [0, -0.26],
+  [0.24, 0.16],
+  [-0.24, 0.16]
+]);
+const SQUARE = polyPath([
+  [0, -0.2],
+  [0.2, -0.2],
+  [0.2, 0.2],
+  [-0.2, 0.2],
+  [-0.2, -0.2]
+]);
+const CYCLE = [CIRCLE, TRIANGLE, SQUARE];
+function morphN(d) {
+  return Math.max(6, Math.round(34 * d));
+}
+const HOLD = 1.4;
+const MORPH = 0.9;
+const SEG = HOLD + MORPH;
+const frameMorph = (size, t, o) => {
+  const K = CYCLE.length;
+  const tc = t % (SEG * K);
+  const held = o.shape != null && o.shape >= 0 && o.shape < K ? Math.floor(o.shape) : -1;
+  const k = held >= 0 ? held : Math.floor(tc / SEG);
+  const local = held >= 0 ? t % SEG : tc - k * SEG;
+  const m = held >= 0 ? 0 : local > HOLD ? smoothE((local - HOLD) / MORPH) : 0;
+  const sprd = o.spread ?? 1;
+  const pA = CYCLE[k];
+  const pB = held >= 0 ? pA : CYCLE[(k + 1) % K];
+  const M = 160;
+  const pts = [];
+  for (let i = 0; i < M; i++) {
+    const f = i / M;
+    const a = pA(f);
+    const b = pB(f);
+    pts.push([(a[0] + (b[0] - a[0]) * m) * sprd, (a[1] + (b[1] - a[1]) * m) * sprd]);
+  }
+  const L = [];
+  let total = 0;
+  for (let i = 0; i < M; i++) {
+    const a = pts[i];
+    const b = pts[(i + 1) % M];
+    const l = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    L.push(l);
+    total += l;
+  }
+  const n = morphN(o.iconD ?? 1);
+  const re = (o.rDot ?? 0.021) * 1.35 * sprd;
+  const pulse = 1 + 0.02 * Math.sin(local * 3.1);
+  const dots = [];
+  const c2 = size / 2;
+  let seg = 0;
+  let acc = 0;
+  for (let k2 = 0; k2 < n; k2++) {
+    const target = k2 / n * total;
+    while (acc + L[seg] < target && seg < M - 1) {
+      acc += L[seg];
+      seg++;
+    }
+    const a = pts[seg];
+    const b = pts[(seg + 1) % M];
+    const f = L[seg] ? Math.min(1, (target - acc) / L[seg]) : 0;
+    const x = (a[0] + (b[0] - a[0]) * f) * pulse;
+    const y = (a[1] + (b[1] - a[1]) * f) * pulse;
+    dots.push({
+      x: c2 + x * size,
+      y: c2 + y * size,
+      z: 0,
+      r: Math.max(0.35, re * size),
+      white: 0.1
+    });
+  }
+  return finalizeFrame(dots, [], o.rMin);
+};
+const frameOrbits = (size, t, o) => {
+  const cx = size / 2;
+  const cy = size / 2;
+  const R = size / 2 * 0.82;
+  const pt = makeProj(t * 0.12, 0.3, cx, cy, 1);
+  const rs = radiusScale(size, o.rsPow ?? 0.6);
+  const dots = [];
+  const orbitN = o.orbitN ?? 12;
+  const ghostN = o.ghostN ?? 40;
+  const particles = o.particles ?? 3;
+  for (let orb = 0; orb < orbitN; orb++) {
+    const h1 = hashD(orb, 1.7);
+    const h2 = hashD(orb, 5.2);
+    const h3 = hashD(orb, 8.9);
+    const ro = R * (0.45 + 0.52 * h1);
+    const th = h1 * 2 * Math.PI;
+    const phi = Math.acos(2 * h2 - 1);
+    const nx = Math.sin(phi) * Math.cos(th);
+    const ny = Math.cos(phi);
+    const nz = Math.sin(phi) * Math.sin(th);
+    let ux = -ny;
+    let uy = nx;
+    const uz = 0;
+    const ul = Math.max(1e-6, Math.sqrt(ux * ux + uy * uy));
+    ux /= ul;
+    uy /= ul;
+    const vx = ny * uz - nz * uy;
+    const vy = nz * ux - nx * uz;
+    const vz = nx * uy - ny * ux;
+    const speed = (0.25 + 0.55 * h3) * (h3 > 0.5 ? 1 : -1);
+    for (let k = 0; k < ghostN; k++) {
+      const a = k / ghostN * 2 * Math.PI;
+      const [px, py, z] = pt(
+        (ux * Math.cos(a) + vx * Math.sin(a)) * ro,
+        (uy * Math.cos(a) + vy * Math.sin(a)) * ro,
+        (uz * Math.cos(a) + vz * Math.sin(a)) * ro
+      );
+      const depth = (z / ro + 1) / 2;
+      dots.push({
+        x: px,
+        y: py,
+        z,
+        r: (o.ghostR ?? 0.9) * rs,
+        white: 0.72,
+        a: (o.ghostA ?? 0.5) * (0.4 + 0.6 * depth)
+      });
+    }
+    for (let m = 0; m < particles; m++) {
+      const a = t * speed + m / particles * 2 * Math.PI + h2 * 6;
+      const [px, py, z] = pt(
+        (ux * Math.cos(a) + vx * Math.sin(a)) * ro,
+        (uy * Math.cos(a) + vy * Math.sin(a)) * ro,
+        (uz * Math.cos(a) + vz * Math.sin(a)) * ro
+      );
+      const depth = (z / ro + 1) / 2;
+      dots.push({
+        x: px,
+        y: py,
+        z,
+        r: ((o.partR ?? 1.2) + (o.partRDepth ?? 1.6) * depth) * rs,
+        white: 0.3 - 0.22 * depth
+      });
+    }
+  }
+  return finalizeFrame(dots, [], o.rMin);
+};
+const frameRibbon = (size, t, o) => {
+  const cx = size / 2;
+  const cy = size / 2;
+  const R = size / 2 * 0.78;
+  const spin = o.spin ?? 1;
+  const camTilt = 0.3;
+  const pt = makeProj(t * 0.1 * spin, camTilt, cx, cy, 1);
+  const rs = radiusScale(size, o.rsPow ?? 0.6);
+  const dots = [];
+  const ghostN = o.ghostN ?? 150;
+  for (let i = 0; i < ghostN; i++) {
+    const d = fibDir(i, ghostN);
+    const [px, py, z] = pt(d[0] * R, d[1] * R, d[2] * R);
+    const depth = (z / R + 1) / 2;
+    dots.push({ x: px, y: py, z, r: 0.8 * rs, white: 0.78, a: 0.1 + 0.22 * depth });
+  }
+  const ya = t * 0.24 * spin;
+  const ta = o.faceOn ? -camTilt : 0.55 + 0.3 * Math.sin(t * 0.18) * spin;
+  const ux = Math.cos(ya);
+  const uy = 0;
+  const uz = Math.sin(ya);
+  const vx = -uz * Math.sin(ta);
+  const vy = Math.cos(ta);
+  const vz = ux * Math.sin(ta);
+  const nx = uy * vz - uz * vy;
+  const ny = uz * vx - ux * vz;
+  const nz = ux * vy - uy * vx;
+  const wobAmp = 0.23 * (o.wobMul ?? 1);
+  const baseR = o.faceOn ? R / (1 + 0.85 * wobAmp) : R;
+  const baseLanes = o.lanes ?? 5;
+  const segs = o.segs ?? 88;
+  const lanes = Math.max(1, Math.round(baseLanes * (o.bandMul ?? 1)));
+  for (let w = 0; w < lanes; w++) {
+    const laneOff = (w - (lanes - 1) / 2) * 0.075;
+    const edge = Math.abs(w - (lanes - 1) / 2) / Math.max(1, (lanes - 1) / 2);
+    for (let k = 0; k < segs; k++) {
+      const a = k / segs * 2 * Math.PI;
+      const wob = (0.16 * Math.sin(a * 3 - t * 1.7 + w * 0.22) + 0.07 * Math.sin(a * 5 + t * 1.1)) * (o.wobMul ?? 1);
+      const radial = o.faceOn ? 1 + wob : 1;
+      const off = o.faceOn ? laneOff : laneOff + wob;
+      const x = ux * Math.cos(a) + vx * Math.sin(a) + nx * off;
+      const y = uy * Math.cos(a) + vy * Math.sin(a) + ny * off;
+      const z = uz * Math.cos(a) + vz * Math.sin(a) + nz * off;
+      const l = Math.sqrt(x * x + y * y + z * z);
+      const rr = baseR * radial;
+      const [px, py, zr] = pt(x / l * rr, y / l * rr, z / l * rr);
+      const depth = (zr / R + 1) / 2;
+      dots.push({
+        x: px,
+        y: py,
+        z: zr,
+        r: ((o.rBase ?? 1.1) + (o.rDepth ?? 1.7) * depth) * (1 - 0.25 * edge) * rs,
+        white: 0.52 - 0.44 * depth + 0.18 * edge,
+        a: 0.4 + 0.6 * depth
+      });
+    }
+  }
+  return finalizeFrame(dots, [], o.rMin);
+};
+const frameWeb = (size, t, o) => {
+  const cx = size / 2;
+  const cy = size / 2;
+  const R = size / 2 * 0.8 * (o.spread ?? 1);
+  const pt = makeProj(t * 0.12, 0.32, cx, cy, R);
+  const rs = radiusScale(size, o.rsPow ?? 0.6);
+  const nodeN = o.nodeN ?? 30;
+  const thr = o.thr ?? 0.72;
+  const nodeR = o.nodeR ?? 1.4;
+  const nodeRDepth = o.nodeRDepth ?? 1.8;
+  const nodes = [];
+  for (let i = 0; i < nodeN; i++) {
+    const d = fibDir(i, nodeN);
+    const x = d[0] + 0.3 * (vnoise(i * 0.31 + 9, t * 0.24) - 0.5) * 2;
+    const y = d[1] + 0.3 * (vnoise(i * 0.53 + 27, t * 0.21) - 0.5) * 2;
+    const z = d[2] + 0.3 * (vnoise(i * 0.77 + 55, t * 0.27) - 0.5) * 2;
+    const l = Math.sqrt(x * x + y * y + z * z);
+    nodes.push([x / l, y / l, z / l]);
+  }
+  const lines = [];
+  const dots = [];
+  for (let i = 0; i < nodeN; i++) {
+    for (let j = i + 1; j < nodeN; j++) {
+      const dx = nodes[i][0] - nodes[j][0];
+      const dy = nodes[i][1] - nodes[j][1];
+      const dz = nodes[i][2] - nodes[j][2];
+      const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+      if (dist >= thr) continue;
+      const [x1, y1, z1] = pt(nodes[i][0], nodes[i][1], nodes[i][2]);
+      const [x2, y2, z2] = pt(nodes[j][0], nodes[j][1], nodes[j][2]);
+      const depth = ((z1 + z2) / 2 + 1) / 2;
+      lines.push({
+        x1,
+        y1,
+        x2,
+        y2,
+        white: 0.42,
+        a: (1 - dist / thr) * (0.3 + 0.55 * depth),
+        w: Math.max(0.6, (o.lineW ?? 0.8) * rs)
+      });
+    }
+  }
+  for (let i = 0; i < nodeN; i++) {
+    const [px, py, z] = pt(nodes[i][0], nodes[i][1], nodes[i][2]);
+    const depth = (z + 1) / 2;
+    const pulse = 1 + 0.25 * Math.sin(t * 1.4 + i * 2.7);
+    dots.push({
+      x: px,
+      y: py,
+      z,
+      r: (nodeR + nodeRDepth * depth) * pulse * rs,
+      white: 0.55 - 0.45 * depth
+    });
+  }
+  const signals = o.signals ?? 5;
+  for (let s = 0; s < signals; s++) {
+    const seg = Math.floor(t * 0.55 + s * 7.31);
+    const a = Math.floor(hashD(seg, s * 3.1 + 1.7) * nodeN);
+    const b = Math.floor(hashD(seg, s * 5.7 + 4.2) * nodeN);
+    if (a === b) continue;
+    const f = frac(t * 0.55 + s * 7.31);
+    const x = lerp(nodes[a][0], nodes[b][0], f);
+    const y = lerp(nodes[a][1], nodes[b][1], f);
+    const z = lerp(nodes[a][2], nodes[b][2], f);
+    const l = Math.max(1e-6, Math.sqrt(x * x + y * y + z * z));
+    const [px, py, zr] = pt(x / l, y / l, z / l);
+    const depth = (zr + 1) / 2;
+    dots.push({
+      x: px,
+      y: py,
+      z: zr,
+      r: (nodeR * 1.5 + nodeRDepth * depth) * rs,
+      white: 0.05,
+      a: 0.5 + 0.5 * depth
+    });
+  }
+  return finalizeFrame(dots, lines, o.rMin);
+};
+const MODE_FRAMES = {
+  orbits: frameOrbits,
+  globe: frameGlobe,
+  rubik: frameRubik,
+  wave: frameWave,
+  web: frameWeb,
+  braid: frameBraid,
+  ribbon: frameRibbon,
+  // ring shares ribbon's geometry — the `faceOn` profile flag switches it
+  ring: frameRibbon,
+  morph: frameMorph
+};
+const MODE_DRAWS = Object.fromEntries(
+  Object.entries(MODE_FRAMES).map(([key, frame]) => [
+    key,
+    (ctx, size, t, dark, opts) => paintFrame(ctx, frame(size, t, opts), dark)
+  ])
+);
+const STATE_TO_MODE = {
+  working: "orbits",
+  searching: "globe",
+  solving: "rubik",
+  listening: "wave",
+  connecting: "web",
+  weaving: "braid",
+  composing: "ribbon",
+  breathing: "ring",
+  shaping: "morph"
+};
+const PRESETS = {
+  orbits: {
+    64: { speed: 1.885, count: 1, size: 1 },
+    32: { speed: 2.9072, count: 0.4251, size: 1.6849 },
+    20: { speed: 3.9, count: 0.238, size: 2.4 }
+  },
+  globe: {
+    64: { speed: 2.015, count: 0.42, size: 1.15, extra: { scanMul: 4.08, dimBase: 0.45 } },
+    32: { speed: 2.3803, count: 0.1839, size: 1.4769, extra: { scanMul: 4.2301, dimBase: 0.45 } },
+    20: { speed: 2.665, count: 0.105, size: 1.75, extra: { scanMul: 4.335, dimBase: 0.45 } }
+  },
+  rubik: {
+    64: { speed: 1.82, count: 0.35, size: 1.05 },
+    32: { speed: 1.8964, count: 0.1537, size: 1.4951 },
+    20: { speed: 1.95, count: 0.088, size: 1.9 }
+  },
+  wave: {
+    64: { speed: 4.388, count: 0.341, size: 1 },
+    32: { speed: 4.1512, count: 0.169, size: 1.3232 },
+    20: { speed: 3.998, count: 0.105, size: 1.6 }
+  },
+  web: {
+    64: { speed: 3.315, count: 1.35, size: 0.95 },
+    32: { speed: 5.0104, count: 0.4942, size: 1.2571 },
+    20: { speed: 6.63, count: 0.25, size: 1.52 }
+  },
+  braid: {
+    64: { speed: 1.625, count: 0.5, size: 1 },
+    32: { speed: 2.2234, count: 0.2056, size: 1.2011 },
+    20: { speed: 2.75, count: 0.1125, size: 1.36 }
+  },
+  ribbon: {
+    64: { speed: 2.34, count: 0.25, size: 0.85, extra: { spin: 0, bandMul: 3.9, wobMul: 1 } },
+    32: { speed: 2.7776, count: 0.0969, size: 0.9766, extra: { spin: 0, bandMul: 4.49, wobMul: 1 } },
+    20: { speed: 3.12, count: 0.051, size: 1.073, extra: { spin: 0, bandMul: 4.94, wobMul: 1 } }
+  },
+  ring: {
+    64: { speed: 3.24, count: 0.25, size: 0.956, extra: { spin: 0, bandMul: 3.627, wobMul: 0.368 } },
+    32: { speed: 3.5517, count: 0.0678, size: 1.31, extra: { spin: 0, bandMul: 3.8265, wobMul: 0.4751 } },
+    20: { speed: 3.78, count: 0.028, size: 1.622, extra: { spin: 0, bandMul: 3.968, wobMul: 0.565 } }
+  },
+  morph: {
+    64: { speed: 2.405, count: 0.702, size: 0.395, extra: { spread: 1.45 } },
+    32: { speed: 2.2057, count: 0.5937, size: 0.6916, extra: { spread: 1.45 } },
+    20: { speed: 2.08, count: 0.53, size: 1.011, extra: { spread: 1.45 } }
+  }
+};
+const cache = /* @__PURE__ */ new Map();
+function resolvePreset(state, size) {
+  const key = `${state}-${size}`;
+  const hit = cache.get(key);
+  if (hit) return hit;
+  const mode = STATE_TO_MODE[state];
+  const preset = PRESETS[mode][size];
+  let opts = { ...BASE_PROFILES[mode] };
+  if (preset.count !== 1) opts = scaleCounts(opts, preset.count);
+  if (preset.size !== 1) opts = scaleRadii(opts, preset.size);
+  if (preset.extra) opts = { ...opts, ...preset.extra };
+  const resolved = { mode, speed: preset.speed, opts };
+  cache.set(key, resolved);
+  return resolved;
+}
+
+return { MODE_FRAMES: MODE_FRAMES, STATE_TO_MODE: STATE_TO_MODE, resolvePreset: resolvePreset, paintFrame: paintFrame, scaleRadii: scaleRadii };
+})();
+/* Shared figure kit: SVG helpers, travelling tokens, and a pausable generator timeline. */
+var NS = 'http://www.w3.org/2000/svg';
+var svg = document.querySelector('svg.fig');
+function E(tag, attrs, parent, text) {
+  var n = document.createElementNS(NS, tag);
+  for (var k in attrs) n.setAttribute(k, attrs[k]);
+  if (text != null) n.textContent = text;
+  (parent || svg).appendChild(n);
+  return n;
+}
+function $(id) { return document.getElementById(id); }
+function ease(t) { return t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+function frames(ms, fn) { return { ms: ms, fn: fn }; }
+function* wait(ms) { yield frames(ms); }
+function put(n, x, y, s) { n.setAttribute('transform', 'translate(' + x + ',' + y + ')' + (s != null ? ' scale(' + s + ')' : '')); }
+function on(n, cls, v) { if (n) n.classList.toggle(cls, v !== false); }
+
+/* tokens */
+function doc(color, label) {
+  var g = E('g', { 'class': 'tok' }, $('tokens'));
+  E('path', { d: 'M-9,-12 h12 l6,6 v18 h-18 z', fill: '#fff', stroke: color, 'stroke-width': 1.7, 'stroke-linejoin': 'round' }, g);
+  E('path', { d: 'M-5,-3 h10 M-5,1 h10 M-5,5 h7', stroke: color, 'stroke-width': 1.3 }, g);
+  if (label) E('text', { x: 0, y: 26, 'text-anchor': 'middle', 'font-size': 13, 'font-style': 'italic', 'font-family': 'var(--serif)', fill: color }, g, label);
+  g.style.opacity = 0; return g;
+}
+function coin() {
+  var g = E('g', { 'class': 'tok' }, $('tokens'));
+  E('ellipse', { cx: 0, cy: 2, rx: 8, ry: 4, fill: '#C97A00' }, g);
+  E('ellipse', { cx: 0, cy: -1, rx: 8, ry: 4, fill: '#FFC24D', stroke: '#C97A00', 'stroke-width': 1.2 }, g);
+  g.style.opacity = 0; return g;
+}
+function pill(cls, text, x, y, parent) {
+  var g = E('g', { 'class': 'pill fade ' + cls }, parent || $('tokens'));
+  var w = 14 + text.length * 6.6;
+  E('rect', { x: x - w / 2, y: y - 11, width: w, height: 22, rx: 11 }, g);
+  E('text', { x: x, y: y + 4 }, g, text);
+  g.style.opacity = 0; return g;
+}
+function* fadeIn(n, ms) { yield frames(ms || 250, function (t) { n.style.opacity = t; }); }
+function* fadeOut(n, ms) { yield frames(ms || 250, function (t) { n.style.opacity = 1 - t; }); }
+function* along(tok, d, ms, keep) {
+  var p = E('path', { d: d, fill: 'none', stroke: 'none' }), L = p.getTotalLength();
+  tok.style.opacity = 1;
+  yield frames(ms, function (t) { var q = p.getPointAtLength(ease(t) * L); put(tok, q.x, q.y); });
+  p.remove(); if (!keep) tok.remove();
+}
+function* drawLine(path, ms) {
+  var L = path.getTotalLength(); path.style.opacity = 1;
+  path.style.strokeDasharray = L; path.style.strokeDashoffset = L;
+  yield frames(ms, function (t) { path.style.strokeDashoffset = L * (1 - ease(t)); });
+  path.style.strokeDasharray = path.dataset.dash || ''; path.style.strokeDashoffset = 0;
+}
+/* run several generators side by side */
+function* together(gens) {
+  var live = gens.map(function (g) { return { g: g, cur: null, t0: 0 }; }), clock = 0;
+  while (live.length) {
+    var step = 16;
+    yield frames(step, null);
+    clock += step;
+    live = live.filter(function (s) {
+      while (true) {
+        if (!s.cur) { var r = s.g.next(); if (r.done) return false; s.cur = r.value; s.t0 = clock; }
+        var t = s.cur.ms ? Math.min((clock - s.t0) / s.cur.ms, 1) : 1;
+        if (s.cur.fn) s.cur.fn(t);
+        if (t < 1) return true;
+        s.cur = null;
+      }
+    });
+  }
+}
+
+/* agents drawn as isometric cubes; size = wealth */
+function agent(name, x, y, w) {
+  var g = E('g', { 'class': 'agent' }, $('agents'));
+  var c = E('g', {}, g);
+  E('use', { href: '#cube', x: -20, y: -21, width: 40, height: 42 }, c);
+  E('text', { 'class': 'nm', x: 0, y: 36 }, g, name);
+  var a = { g: g, c: c, x: x, y: y, w: w };
+  put(g, x, y); put(c, 0, 0, scaleOf(w)); return a;
+}
+function scaleOf(w) { return Math.max(.25, Math.sqrt(Math.max(w, 0))); }
+function* wealth(a, to, ms) {
+  var from = a.w; a.w = to;
+  yield frames(ms || 500, function (t) { put(a.c, 0, 0, scaleOf(from + (to - from) * ease(t))); });
+}
+
+/* seeking replays the story from the start, so any position restores the figure and its caption */
+function play(story) {
+  var fig = $('figure'), prog = $('progress'), pb = $('play');
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var sequence = null, frame = null, frameStart = 0, position = 0, playing = !reduce, scrub = null, raf = null, last = null;
+  var duration = 0, dry = story(), s = dry.next();
+  while (!s.done) { duration += s.value.ms; s = dry.next(); }
+  prog.max = String(duration);
+  var STEP = duration / 100, PAGE = duration / 10;  // the slider convention: arrows move 1%, page keys 10%
+  function fresh() { if (sequence) sequence.return(); $('tokens').innerHTML = ''; sequence = story(); frameStart = 0; position = 0; frame = sequence.next(); }
+  function update() {
+    var pct = position / duration * 100;
+    prog.value = String(Math.round(position));
+    prog.style.setProperty('--p', pct.toFixed(2) + '%');
+    prog.setAttribute('aria-valuetext', Math.round(pct) + '% of animation');
+
+    if (window.onFrame) onFrame(position);
+  }
+  function renderAt(target) {
+    target = Math.max(0, Math.min(duration, target));
+    if (!sequence || target < position) fresh();
+    while (!frame.done && target >= frameStart + frame.value.ms) {
+      if (frame.value.fn) frame.value.fn(1);
+      frameStart += frame.value.ms; frame = sequence.next();
+    }
+    position = frame.done ? frameStart : target;
+    if (!frame.done && frame.value.fn) frame.value.fn((position - frameStart) / frame.value.ms);
+    update();
+  }
+  function jumpTo(t) { fig.classList.add('seeking'); renderAt(t); svg.getBoundingClientRect(); fig.classList.remove('seeking'); last = null; }
+  function tick(now) {
+    raf = null;
+    if (!playing || scrub !== null || document.hidden) { last = null; return; }
+    var dt = last === null ? 0 : now - last; last = now;
+    if (frame && frame.done) renderAt(0); else renderAt(position + dt);
+    raf = requestAnimationFrame(tick);
+  }
+  function sync() {
+    pb.textContent = playing ? 'Pause' : 'Play';
+    if (playing && scrub === null && !document.hidden) { if (raf === null) { last = null; raf = requestAnimationFrame(tick); } }
+    else { if (raf !== null) cancelAnimationFrame(raf); raf = null; last = null; }
+  }
+  pb.addEventListener('click', function () { playing = !playing; sync(); });
+  $('restart').addEventListener('click', function () { playing = true; if (sequence) sequence.return(); sequence = null; jumpTo(0); sync(); });
+  prog.addEventListener('input', function () { jumpTo(Number(prog.value)); sync(); });
+  prog.addEventListener('pointerdown', function (e) { if (e.button === 0) { scrub = e.pointerId; sync(); } });
+  function endScrub(e) { if (scrub === null || (e && e.pointerId != null && e.pointerId !== scrub)) return; scrub = null; sync(); }
+  window.addEventListener('pointerup', endScrub); window.addEventListener('pointercancel', endScrub);
+  window.addEventListener('blur', endScrub); prog.addEventListener('blur', endScrub);
+  prog.addEventListener('keydown', function (e) {
+    var k = e.key, t = k === 'ArrowLeft' || k === 'ArrowDown' ? position - STEP : k === 'ArrowRight' || k === 'ArrowUp' ? position + STEP
+      : k === 'PageDown' ? position - PAGE : k === 'PageUp' ? position + PAGE : k === 'Home' ? 0 : k === 'End' ? duration : null;
+    if (t === null) return; e.preventDefault(); jumpTo(t); sync();
+  });
+  document.addEventListener('visibilitychange', sync);
+  jumpTo(reduce ? duration : 0);  // complete at rest; reduced motion opens on the finished figure
+  sync();
+}
+function say(html) { $('status').innerHTML = html; }
+
+
+
+/* orbs run on the figure's clock, so scrubbing and pausing move them too */
+var ORB = 52, PANEL = [36, 60], DARK = document.documentElement.classList.contains('dark'),
+  LIGHT_INK = { idle: { r: 28, g: 36, b: 56 }, working: { r: 24, g: 110, b: 64 }, connecting: { r: 92, g: 50, b: 165 } },
+  DARK_INK = { idle: { r: 226, g: 232, b: 242 }, working: { r: 110, g: 224, b: 160 }, connecting: { r: 200, g: 170, b: 255 } },
+  INK = DARK ? DARK_INK : LIGHT_INK, DOT = 1.6, SLOW = .5, BAR = 44, RICH = 1.6, FAINT = .5;
+var cv = $('orbs'), K = Math.min(3, 2 * (window.devicePixelRatio || 1)), cx2 = cv.getContext('2d');
+cv.width = 300 * K; cv.height = 306 * K;
+window.addEventListener('themechange', function (e) { DARK = e.detail; INK = DARK ? DARK_INK : LIGHT_INK; onFrame(lastMs); });  // redraw now, even when paused
+var PRE = {};
+['working', 'weaving', 'searching', 'listening', 'composing', 'shaping'].forEach(function (s) {
+  var r = Orbs.resolvePreset(s, 64); PRE[s] = { mode: r.mode, speed: r.speed, opts: Orbs.scaleRadii(r.opts, DOT) }; });
+function* become(a, shape) { a.prev = a.shape; a.shape = shape; yield frames(800, function (t) { a.mix = t; }); a.prev = null; }
+function agent(name, x, y, w) {
+  var g = E('g', { 'class': 'agent' }, $('agents'));
+  var c = E('g', {}, g);
+  E('text', { 'class': 'nm', x: 0, y: 40 }, g, name);
+  E('rect', { 'class': 'wtrack', x: -BAR / 2, y: 46, width: BAR, height: 4, rx: 2 }, g);
+  E('text', { 'class': 'rip', x: 0, y: 8 }, g, '✕');
+  var bar = E('rect', { 'class': 'wbar', x: -BAR / 2, y: 46, width: 0, height: 4, rx: 2 }, g);
+  var a = { g: g, c: c, x: x, y: y, w: w, bar: bar, shape: 'working', prev: null, mix: 1, gone: 0, hl: false };
+  put(g, x, y); put(c, 0, 0, scaleOf(w)); return a;
+}
+var lastMs = 0;
+function onFrame(ms) {
+  lastMs = ms;
+  if (!A) return;
+  cx2.setTransform(1, 0, 0, 1, 0, 0); cx2.clearRect(0, 0, cv.width, cv.height);
+  A.forEach(function (a) {
+    var op = a.g.style.opacity === '' ? 1 : +a.g.style.opacity; if (op <= 0) return;
+    var cl = a.g.classList, dead = cl.contains('dead');
+    var st = dead ? 'idle' : cl.contains('adopt') ? 'connecting' : cl.contains('busy') ? 'working' : 'idle';
+    var m = /scale\(([\d.]+)\)/.exec(a.c.getAttribute('transform') || ''), s = m ? +m[1] : 1;
+    a.bar.setAttribute('width', (dead ? 0 : BAR * Math.min(1, s * s / RICH)).toFixed(1));  // the scale is sqrt(wealth)
+    var acts = st !== 'idle' || !!a.prev, lit = acts || !!a.hl, size = ORB, alpha = op * (dead ? FAINT * (1 - a.gone) : lit ? 1 : FAINT);  // a dead orb dissolves
+    var ink = INK[st], X = K * (a.x - PANEL[0]), Y = K * (a.y - PANEL[1] - 4);
+    if (alpha <= 0) return;
+    if (acts && !dead) {                       // a soft halo in the agent's colour while it acts
+      var h = cx2.createRadialGradient(X, Y, 0, X, Y, K * size * .78), rgb = ink.r + ',' + ink.g + ',' + ink.b;
+      h.addColorStop(0, 'rgba(' + rgb + ',.22)'); h.addColorStop(.6, 'rgba(' + rgb + ',.10)'); h.addColorStop(1, 'rgba(' + rgb + ',0)');
+      cx2.setTransform(1, 0, 0, 1, 0, 0); cx2.globalAlpha = op; cx2.fillStyle = h;
+      cx2.beginPath(); cx2.arc(X, Y, K * size * .78, 0, Math.PI * 2); cx2.fill();
+      cx2.shadowColor = 'rgba(' + rgb + ',.6)'; cx2.shadowBlur = 4 * K;
+    }
+    cx2.setTransform(K * size / 64, 0, 0, K * size / 64, K * (a.x - PANEL[0] - size / 2), K * (a.y - PANEL[1] - size / 2 - 4));
+    [[a.prev, 1 - a.mix], [a.shape, a.prev ? a.mix : 1]].forEach(function (d) {
+      if (!d[0] || d[1] <= 0) return;
+      var R = PRE[d[0]], t = dead ? 0.6 : ms / 1000 * R.speed * SLOW;
+      cx2.globalAlpha = alpha * d[1];
+      Orbs.paintFrame(cx2, Orbs.MODE_FRAMES[R.mode](64, t, R.opts), DARK, INK[st]);
+    });
+    cx2.shadowBlur = 0;
+  });
+  cx2.globalAlpha = 1;
+}
+var SLOT = [[100,136],[186,136],[272,136],[100,226],[186,226],[272,226],[186,306]];
+var SHELF = { 'α': 300, 'β': 400, 'γ': 500, 'δ': 600, 'ε': 700 }, SY = 458;
+var A, shelf;
+function setup() {
+  $('agents').innerHTML = ''; $('slots').innerHTML = '';
+  A = ['a1','a2','a3','a4','a5','a6','a7'].map(function (n, i) { return agent(n, SLOT[i][0], SLOT[i][1], i < 6 ? 1 : 0); });
+  A[6].g.style.opacity = 0;
+  shelf = {};
+  Object.keys(SHELF).forEach(function (k) {
+    var g = E('g', { 'class': 'slot' }, $('slots'));
+    E('rect', { x: SHELF[k] - 24, y: SY - 26, width: 48, height: 58, rx: 8 }, g);
+  });
+  $('hold').textContent = 'seed'; $('round').textContent = 'round 1';
+  $('best').setAttribute('cx', 110); $('trail').setAttribute('d', 'M110,70');
+  ['grader','holding','credit','rent'].forEach(function (id) { on($(id), 'on', false); });
+}
+var best = 110;
+function* advance(to, label) {
+  var from = best; best = to; $('hold').textContent = label;
+  yield frames(900, function (t) { var x = from + (to - from) * ease(t);
+    $('best').setAttribute('cx', x); $('trail').setAttribute('d', 'M110,70 L' + x + ',70'); });
+}
+/* credit traces backward: from the gain, down the culture to the work it was built on, then up to that work's author */
+function* trace(k, a, amount) {
+  var x = SHELF[k], top = SY - 26, d = 'M505,334 C505,' + (top - 30) + ' ' + x + ',' + (top - 40) + ' ' + x + ',' + top;
+  var line = E('path', { 'class': 'lineage', d: d }, $('tokens')); line.dataset.dash = '6 5';
+  on(shelf[k].d, 'glow'); yield* drawLine(line, 800);
+  var c = coin(); yield* along(c, d + ' C' + x + ',' + (top - 120) + ' ' + a.x + ',' + (a.y + 110) + ' ' + a.x + ',' + a.y, 1300);
+  on(shelf[k].d, 'glow', false);
+  yield* wealth(a, a.w + amount, 400);
+  yield* fadeOut(line, 400); line.remove();
+}
+/* what a culture entry was built on, drawn under the shelf and kept */
+function* built(from, to) {
+  var a = SHELF[from], b = SHELF[to], y = SY + 32;
+  var p = E('path', { 'class': 'built', d: 'M' + a + ',' + y + ' C' + a + ',' + (y + 26) + ' ' + b + ',' + (y + 26) + ' ' + b + ',' + y }, $('slots'));
+  yield* drawLine(p, 700);
+}
+/* the submitter's share: a direct line from the gain, drawn like the traces so every payee shows as one line */
+function* direct(a, amount) {
+  var d = 'M420,292 C360,292 ' + (a.x + 70) + ',' + a.y + ' ' + (a.x + 26) + ',' + a.y;
+  var line = E('path', { 'class': 'lineage', d: d }, $('tokens')); line.dataset.dash = '6 5';
+  yield* drawLine(line, 800);
+  var c = coin(); yield* along(c, d + ' L' + a.x + ',' + a.y, 1300);
+  yield* wealth(a, a.w + amount, 400);
+  yield* fadeOut(line, 400); line.remove();
+}
+function* pay(list, from) {
+  yield* together(list.map(function (p) {
+    return (function* () { var c = coin(); yield* along(c, 'M' + from + ' L' + p[0].x + ',' + p[0].y, 800); yield* wealth(p[0], p[0].w + p[1], 400); })();
+  }));
+}
+/* culture: a doc settles on the shelf and stays; adopting sends a copy up to the agent */
+function* publish(k, from, by, color) {
+  var d = doc(color || '#7448BB', k), x = SHELF[k];
+  yield* along(d, 'M' + from[0] + ',' + from[1] + ' C' + from[0] + ',' + (SY - 60) + ' ' + x + ',' + (SY - 70) + ' ' + x + ',' + (SY - 4), 1100, true);
+  var t = E('text', { 'class': 'by', x: x + 30, y: SY + 4 }, $('slots'), by); t.style.opacity = 0;
+  shelf[k] = { d: d, by: t }; yield* fadeIn(t, 300);
+}
+function* adopt(k, a) {
+  var x = SHELF[k]; on(shelf[k].d, 'glow'); on(a.g, 'adopt');
+  var d = doc('#7448BB', k);
+  yield* along(d, 'M' + x + ',' + (SY - 4) + ' C' + x + ',' + (SY - 80) + ' ' + a.x + ',' + (a.y + 90) + ' ' + a.x + ',' + a.y, 1100);
+  on(shelf[k].d, 'glow', false); on(a.g, 'adopt', false);
+}
+function* submit(a, label, ms) {
+  on(a.g, 'busy');
+  var d = doc('#2E8A57', label);
+  yield* along(d, 'M' + a.x + ',' + a.y + ' L' + (a.x + 40) + ',152 L505,152', ms || 1000);
+  on(a.g, 'busy', false);
+}
+function* verdict(cls, text) {
+  var p = pill(cls, text, 505, 92); yield* fadeIn(p); yield* wait(1300); yield* fadeOut(p); p.remove();
+}
+function at(a) { return [a.x, a.y]; }
+function* story() {
+  setup(); best = 110;
+  say('Same frozen model, same wealth, <b>no role</b>, an empty <span class="k-share">culture</span>. Every agent looks alike.'); yield* wait(2200);
+
+  on(A[0].g, 'busy'); on(A[5].g, 'busy');
+  say('a1 and a6 each learn something at their own desks and <span class="k-share">publish it as a skill</span>, with its code. Anyone may use it; nobody has to.');
+  yield* together([publish('α', at(A[0]), 'a1'), publish('β', at(A[5]), 'a6')]);
+  say('Their first work in the culture gives each <b>its own shape</b>: a way of searching that others now know them by.');
+  yield* together([become(A[0], 'weaving'), become(A[5], 'searching')]); yield* wait(900);
+  on(A[0].g, 'busy', false); on(A[5].g, 'busy', false); yield* wait(500);
+
+  on(A[2].g, 'busy');
+  say('<b>Allocation.</b> A softmax over wealth-bids picks who thinks next: <b>a3</b>. It <span class="k-share">adopts α and β</span> from the culture instead of rediscovering them.');
+  yield* together([adopt('α', A[2]), adopt('β', A[2])]);
+  yield* wealth(A[2], .9, 300);
+  say('a3 <b>recombines</b> them into γ and decides to submit. The claim <span class="k-econ">stakes the rent of one grade</span>.');
+  yield* submit(A[2], 'γ');
+  on($('grader'), 'on');
+  say('<span class="k-truth">The official grader</span> scores γ above the Holding.');
+  yield* verdict('win', '✓ new record');
+  var d = doc('#3456C2'); yield* along(d, 'M590,152 L690,152', 600);
+  on($('grader'), 'on', false); on($('holding'), 'on');
+  yield* advance(330, 'γ');
+  on($('holding'), 'on', false); on($('credit'), 'on');
+  say('<b>Credit traces backward.</b> γ recombines α and β. The gain is split <span class="k-econ">equally</span> three ways: a3, and the authors of α and β, a1 and a6.');
+  var c = coin(); yield* along(c, 'M505,194 L505,292', 500);
+  yield* together([direct(A[2], .3), trace('α', A[0], .3), trace('β', A[5], .3)]);
+  on($('credit'), 'on', false);
+  say('γ joins the culture, with the code it was graded on.');
+  yield* together([publish('γ', [640, 160], 'a3'), become(A[2], 'composing')]);
+  yield* together([built('α', 'γ'), built('β', 'γ')]);
+
+  on($('rent'), 'on');
+  say('<b>Rent.</b> Every live agent pays for the compute the run uses. Doing nothing is not free.');
+  yield* together(A.slice(0, 6).map(function (a) { return (function* () { var c = coin(); yield* along(c, 'M' + a.x + ',' + a.y + ' L' + a.x + ',352 L807,352 L807,334', 1000); })(); }));
+  yield* together(A.slice(0, 6).map(function (a, i) { return wealth(a, a.w - .2, 500); }));
+  on($('rent'), 'on', false);
+
+  say('a5 submits δ.'); yield* submit(A[4], 'δ');
+  on($('grader'), 'on');
+  say('Not better than the Holding. δ\'s grade still enters the culture as <span class="k-bad">evidence of what fails</span>, so nobody pays to learn it twice. That is a contribution too: a5 takes its own shape.');
+  yield* verdict('lose', '✗ not better'); on($('grader'), 'on', false);
+  yield* together([wealth(A[4], A[4].w - .25, 400), publish('δ', [640, 160], 'a5 ✗', '#C2423B'), become(A[4], 'shaping')]);
+
+  say('<b>Selection.</b> a6 has done nothing since β, and one payment does not last: rent drains it into debt with nothing unsettled, and <span class="k-bad">it dies</span>. Its β <span class="k-share">stays in the culture</span>.');
+  yield* wealth(A[5], 0, 1400); on(A[5].g, 'dead'); yield frames(900, function (t) { A[5].gone = t; }); on(shelf['β'].by, 'gone'); on(shelf['β'].d, 'glow'); yield* wait(1800); on(shelf['β'].d, 'glow', false);
+
+  say('<b>Birth.</b> a3 is rich enough to pay for a newborn. It starts from the Holding, in its parent\'s shape.');
+  A[6].shape = A[2].shape; A[6].g.style.opacity = 1;
+  var c2 = coin(); yield* together([wealth(A[2], A[2].w - .5, 600), along(c2, 'M272,226 C272,280 230,306 186,306', 700)]);
+  yield* wealth(A[6], .5, 500);
+
+  $('round').textContent = 'round 2';
+  say('The newborn <b>a7</b> has never searched. It <span class="k-share">adopts γ</span>, its parent\'s work.');
+  yield* adopt('γ', A[6]);
+  yield* submit(A[6], 'ε', 900);
+  on($('grader'), 'on'); yield* verdict('win', '✓ new record');
+  var d2 = doc('#3456C2'); yield* along(d2, 'M590,152 L690,152', 600);
+  on($('grader'), 'on', false);
+  yield* advance(800, 'ε');
+  say('The best verified score passes <span class="k-econ">gold</span>. ε was built on γ: the gain is split equally between a7 and γ\'s author, a3.');
+  on($('credit'), 'on'); var c3 = coin(); yield* along(c3, 'M505,194 L505,292', 500);
+  yield* together([direct(A[6], .4), trace('γ', A[2], .4)]);
+  yield* together([publish('ε', [640, 160], 'a7'), become(A[6], 'listening')]);
+  yield* built('γ', 'ε');
+  on($('credit'), 'on', false);
+  yield* wait(1100);
+  say('The organization nobody designed: who survived, who was paid, whose knowledge others started from, and who became distinct. a2 and a4 never contributed, and still look alike.');
+  [0, 2, 4, 6].forEach(function (i) { A[i].hl = true; });
+  yield* wait(3200);
+}
+play(story);
+</script>
+
+<style>
+/* dark theme: the same planes and meanings, lightened for a dark ground; stills stay light */
+html.dark{--ink:#E6E8EE;--muted:#A0A6B4;--line:#3A4152;--soft:#6E7585;--paper:#12151C;--wash:#1A1E27;
+  --disc:#5BC98F;--disc-w:#15261C;--truth:#8AA3F2;--truth-w:#172038;--econ:#F0A848;--econ-w:#2B2112;
+  --share:#B595F0;--share-w:#221A31;--bad:#EF6B63;--bad-w:#2E1717;color-scheme:dark}
+html.dark .bar{border-top-color:#2A2F3B}
+html.dark button{background:#1A1E27;border-color:#3A4152}
+html.dark .progress::-webkit-slider-runnable-track{background:linear-gradient(to right,#6E7585 0%,var(--ink) var(--p),#2A2F3B var(--p),#2A2F3B 100%)}
+html.dark .progress::-moz-range-track{background:linear-gradient(to right,#6E7585 0%,var(--ink) var(--p),#2A2F3B var(--p),#2A2F3B 100%)}
+html.dark .progress::-webkit-slider-thumb, html.dark .progress::-moz-range-thumb{border-color:var(--paper)}
+html.dark .status{border-left-color:#4A5060}
+html.dark .k-econ{color:#F0A848}
+html.dark .region.market{fill:#17150F!important;stroke:#6B5634!important}
+html.dark .region.culture{fill:#17131F!important;stroke:#5E4A8C!important}
+html.dark .box{fill:#1A1E27;stroke:#3A4152}
+html.dark .box.panel{fill:var(--paper)}
+html.dark .box.panel.disc{stroke:#3F9A69!important;fill:transparent!important}
+html.dark .truth .box{stroke:#5B72C0;fill:#161C2E}
+html.dark .econ .box{stroke:#8A6A33;fill:#1D1912}
+html.dark .econ.on .box{stroke:var(--econ);fill:#33260F}
+html.dark .truth.on .box{stroke:var(--truth);fill:#1C2747}
+html.dark .arrow{stroke:#9AA3B5}
+html.dark marker path{fill:#9AA3B5}
+html.dark .lbl{fill:#8A90A0!important}
+html.dark .agent .nm{fill:#C3CAD8!important}
+html.dark .agent.dead .nm{fill:#6E7585!important}
+html.dark .slot rect{fill:var(--paper);stroke:#4A3E66}
+html.dark .by{fill:var(--share)!important}
+html.dark .by.gone{fill:#6B5E86!important}
+html.dark .wtrack{fill:#2A2F3B}
+html.dark .wbar{fill:var(--econ)}
+html.dark .lineage{stroke:var(--econ)}
+html.dark .built{stroke:var(--share)}
+html.dark .rip{fill:var(--bad)!important}
+html.dark svg line[stroke="#2b2b2b"]{stroke:#9AA3B5}
+html.dark svg circle[fill="#2b2b2b"]{fill:#9AA3B5}
+html.dark #best{fill:#172038;stroke:var(--truth)}
+html.dark #trail{stroke:var(--truth)}
+html.dark svg line[stroke="#B8912E"]{stroke:#D4AE4E}
+html.dark svg text[style*="#8C6D1F"]{fill:#D4AE4E!important}
+html.dark svg text[style*="#3456C2"]{fill:var(--truth)!important}
+html.dark tspan[fill="#E08A00"]{fill:var(--econ)}
+html.dark tspan[fill="#7448BB"]{fill:var(--share)}
+html.dark .tok path[fill="#fff"]{fill:var(--paper)}
+html.dark [stroke="#7448BB"]{stroke:var(--share)}
+html.dark [stroke="#3456C2"]{stroke:var(--truth)}
+html.dark [stroke="#2E8A57"]{stroke:var(--disc)}
+html.dark [stroke="#C2423B"]{stroke:var(--bad)}
+html.dark .tok text[fill="#7448BB"]{fill:var(--share)}
+</style>
+</body></html>
