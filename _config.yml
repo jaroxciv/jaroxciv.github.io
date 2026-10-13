@@ -9,12 +9,12 @@ last_name: Alfaro
 contact_note: >
   Best way to reach me: email or LinkedIn.
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
-  Academic website of Javier Alfaro, specializing in GeoAI, remote sensing, and urban analytics.
+  Academic website of Javier Alfaro: GeoAI, remote sensing, urban analytics, and self-evolving multi-agent AI.
 footer_text: >
   Powered by <a href="https://jekyllrb.com/" target="_blank">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio">al-folio</a> theme.
   Hosted by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.
   Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a>.
-keywords: geoai, geospatial data science, remote sensing, urban analytics, machine learning, academic, research # add your own keywords or leave empty
+keywords: geoai, self-evolving ai, multi-agent systems, llm agents, geospatial data science, remote sensing, urban analytics, machine learning, academic, research # add your own keywords or leave empty
 lang: en # the language of your site (for example: en, fr, cn, ru, etc.)
 icon: 🌎 # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
 

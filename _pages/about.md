@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: LSE · GeoAI · <a href="https://www.geokapti.nl/" target="_blank">GeoKapti</a>
+subtitle: LSE · GeoAI · Self-Evolving AI · <a href="https://www.geokapti.nl/" target="_blank">GeoKapti</a>
 
 profile:
   align: right
@@ -31,8 +31,8 @@ latest_posts:
   limit: 3 # leave blank to include all the blog posts
 ---
 
-Hello! 👋 Thanks for stopping by.
+Javier Alfaro is a geospatial data scientist and AI engineer based in London, building geospatial and AI solutions at [GeoKapti](https://www.geokapti.nl/). Javier holds an MSc in Geographic Data Science from LSE, awarded the Best Dissertation Prize.
 
-I'm Javier Alfaro, a geospatial data scientist and AI engineer based in London, currently developing advanced geospatial and AI solutions at [GeoKapti](https://www.geokapti.nl/). My background blends Geographic Data Science, Remote Sensing, and Machine Learning for urban analytics and spatial intelligence.
+Javier's research lies at the intersection of **GeoAI**, **urban analytics**, and **self-evolving AI**, with a focus on measuring urban change from space and on how populations of LLM agents organize themselves.
 
-I believe in the power of open science, reproducibility, and building practical tools to support planners, researchers, and cities worldwide. If you'd like to chat, collaborate, or just geek out about GeoAI, feel free to drop me an email!
+Javier cares about open science, reproducibility, and practical tools for planners, researchers, and cities. To chat or collaborate on GeoAI or agent systems, send an email.
